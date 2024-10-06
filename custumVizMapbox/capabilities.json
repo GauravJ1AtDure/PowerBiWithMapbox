@@ -75,5 +75,5 @@
             }
         }
     ],
-    "privileges": []
+    "privileges": [{ "name": "WebAccess", "essential": true, "parameters": [ "https://api.mapbox.com", "https://events.mapbox.com/" ] }]
 }
