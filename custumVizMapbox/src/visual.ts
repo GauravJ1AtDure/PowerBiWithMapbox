@@ -44,8 +44,8 @@ import { VisualFormattingSettingsModel } from "./settings";
 
 let styleUrlLink:string = 'mapbox://styles/mapbox/streets-v9'
 let map_projection:string = 'mercator'
-let Maplat:number = 22.248110852414744
-let long:number = 79.19163260780998
+let Maplat:number = 22
+let long:number = 79
 let zoomlvl:number = 1
 
 export class Visual implements IVisual {
@@ -63,6 +63,8 @@ export class Visual implements IVisual {
         this.target = options.element;
         mapboxgl.accessToken = this.accessToken;
         this.host = options.host;
+
+        console.log('Visual styleUrlLink', styleUrlLink);
 
         this.map = new mapboxgl.Map({
             container: this.target,
@@ -117,7 +119,7 @@ export class Visual implements IVisual {
         let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel
        // const points = dataView.table.rows;
        
-       console.log('styleUrl', dataView.metadata.objects.directEdit)
+       console.log('directEdit', dataView.metadata.objects.directEdit)
        
        console.log('styleUrlglobalid', this.map.style.globalId)
         // Add markers to the map

@@ -31,45 +31,49 @@ import { formattingSettings } from "powerbi-visuals-utils-formattingmodel";
 import FormattingSettingsCard = formattingSettings.SimpleCard;
 import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
+
 import TextArea = formattingSettings.TextArea;
+import NumUpDown = formattingSettings.NumUpDown;
+import ItemDropdown = formattingSettings.ItemDropdown;
+
 /**
  * Data Point Formatting Card
  */
 
 class DirectEditSettings extends FormattingSettingsCard {
     displayName = 'Direct Edit';
-    private lat: number = 22.248110852414744;
-    private long: number = 79.19163260780998;
+    private lat: number=1;
+    private long: number=2;
     name = 'directEdit';
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
     styleUrl = new formattingSettings.TextArea({
-        displayName: "Style URL",
         name: "styleUrl",
-        value: " ",
-        placeholder: "Add style url"
+        displayName: "Style URL",
+        value: "mapbox://styles/mapbox/streets-v9",
+        placeholder: ""
     });
     projection = new formattingSettings.ItemDropdown({
         name: 'projection',
         items: [{ displayName: 'mercator', value: 'mercator' },{ displayName: 'globe', value: 'globe' }, { displayName: 'naturalEarth', value: 'naturalEarth' }, { displayName: 'winkelTripel', value: 'winkelTripel' }, { displayName: 'equalEarth', value: 'equalEarth' }, { displayName: 'equirectangular', value: 'equirectangular' }, { displayName: 'lambertConformalConic', value: 'lambertConformalConic' }],
-        value: { displayName: 'mercator', value: 'mercator' }
+        value: { displayName: '', value: '' }
     });
     centerLat = new formattingSettings.NumUpDown({
-        displayName: "Center Lat",
         name: "centerLat",
-        value: this.lat
+        displayName: "Center Lat",
+        value:this.lat
     });
     centerLong = new formattingSettings.NumUpDown({
-        displayName: "Center Long",
         name: "centerLong",
+        displayName: "Center Long",
         value:this.long
     });
     zoomLevel = new formattingSettings.NumUpDown({
         name: "zoomLevel",
         displayName: "Zoom Level",
-        value: 1
-    })
+        value:1
+    });
    // topLevelSlice = this.textProperty;
     slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
 }
