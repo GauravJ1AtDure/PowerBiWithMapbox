@@ -42,6 +42,12 @@ import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 
 import { VisualFormattingSettingsModel } from "./settings";
 
+let styleUrlLink:string = 'mapbox://styles/mapbox/streets-v9'
+let map_projection:string = 'mercator'
+let Maplat:number = 22.248110852414744
+let long:number = 79.19163260780998
+let zoomlvl:number = 1
+
 export class Visual implements IVisual {
     private target: HTMLElement;
     private map: mapboxgl.Map;
@@ -55,20 +61,20 @@ export class Visual implements IVisual {
         console.log('Visual constructor', options);
         this.formattingSettingsService = new FormattingSettingsService();
         this.target = options.element;
-        //this.mapDiv = document.createElement('div');
-        //this.mapDiv.className = 'map';
-        //options.element.appendChild(this.mapDiv);
-        //const mapboxgl = require('mapbox-gl');
         mapboxgl.accessToken = this.accessToken;
         this.host = options.host;
 
         this.map = new mapboxgl.Map({
             container: this.target,
-            style: "mapbox://styles/mapbox/streets-v12",
-            center: [12.550343, 55.665957], // Default center
-            zoom: 9, // Default zoom level
-            //projection: 'globe',
+            style: styleUrlLink,
+            center: [long, Maplat], // Default center
+            zoom: zoomlvl, // Default zoom level
+            projection: map_projection,
         })
+
+       
+
+        
       /*  if (document) {
 
             if (!mapboxgl.supported()) {
@@ -102,12 +108,44 @@ export class Visual implements IVisual {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
 
         console.log('Visual update', options);
-
-        const dataView = options.dataViews[0];
-        const points = dataView.table.rows;
-
-        // Add markers to the map
         
+        const dataView = options.dataViews[0];
+        let style_Url = dataView.metadata.objects.directEdit.styleUrl
+        let projection = dataView.metadata.objects.directEdit.projection
+        let centerLat= dataView.metadata.objects.directEdit.centerLat
+        let centerLong= dataView.metadata.objects.directEdit.centerLong
+        let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel
+       // const points = dataView.table.rows;
+       
+       console.log('styleUrl', dataView.metadata.objects.directEdit)
+       
+       console.log('styleUrlglobalid', this.map.style.globalId)
+        // Add markers to the map
+
+      //  this.map.style.globalId = style_Url
+
+          
+
+       let styleUrlLinkString: string = style_Url as string;
+       let mapProjection: string = projection as string;
+       let centerLatNumber: number = centerLat as number;
+       let centerLongNumber: number = centerLong as number;
+       let zoomLevelNumber: number = zoomlevel as number;
+
+       styleUrlLink = styleUrlLinkString
+       Maplat = centerLatNumber
+       long = centerLongNumber
+       map_projection=mapProjection
+       zoomlvl = zoomLevelNumber
+       
+       this.map = new mapboxgl.Map({
+        container: this.target,
+        style: styleUrlLink,
+        center: [long, Maplat],
+        zoom: zoomlvl,
+        projection:map_projection
+   })
+       
             //const lng = Number(point[0]); // Convert to number
             //const lat = Number(point[1]); // Convert to number
             

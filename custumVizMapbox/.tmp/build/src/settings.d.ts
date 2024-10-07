@@ -5,6 +5,18 @@ import FormattingSettingsModel = formattingSettings.Model;
 /**
  * Data Point Formatting Card
  */
+declare class DirectEditSettings extends FormattingSettingsCard {
+    displayName: string;
+    private lat;
+    private long;
+    name: string;
+    styleUrl: formattingSettings.TextArea;
+    projection: formattingSettings.ItemDropdown;
+    centerLat: formattingSettings.NumUpDown;
+    centerLong: formattingSettings.NumUpDown;
+    zoomLevel: formattingSettings.NumUpDown;
+    slices: (formattingSettings.TextArea | formattingSettings.ItemDropdown | formattingSettings.NumUpDown)[];
+}
 declare class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor: formattingSettings.ColorPicker;
     showAllDataPoints: formattingSettings.ToggleSwitch;
@@ -21,6 +33,7 @@ declare class DataPointCardSettings extends FormattingSettingsCard {
 */
 export declare class VisualFormattingSettingsModel extends FormattingSettingsModel {
     dataPointCard: DataPointCardSettings;
-    cards: DataPointCardSettings[];
+    directEditSettings: DirectEditSettings;
+    cards: (DataPointCardSettings | DirectEditSettings)[];
 }
 export {};

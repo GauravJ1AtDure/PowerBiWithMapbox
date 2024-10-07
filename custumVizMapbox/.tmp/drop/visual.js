@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 101:
+/***/ 777:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 239:
+/***/ 395:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -233,6 +233,43 @@ var FormattingSettingsModel = powerbi_visuals_utils_formattingmodel__WEBPACK_IMP
 /**
  * Data Point Formatting Card
  */
+class DirectEditSettings extends FormattingSettingsCard {
+    displayName = 'Direct Edit';
+    lat = 22.248110852414744;
+    long = 79.19163260780998;
+    name = 'directEdit';
+    //private minFontSize: number = 8;
+    //private defaultFontSize: number = 11;
+    //topLevelSlice = this.show;
+    styleUrl = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextArea */ .z.fs({
+        displayName: "Style URL",
+        name: "styleUrl",
+        value: " ",
+        placeholder: "Add style url"
+    });
+    projection = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ItemDropdown */ .z.PA({
+        name: 'projection',
+        items: [{ displayName: 'mercator', value: 'mercator' }, { displayName: 'globe', value: 'globe' }, { displayName: 'naturalEarth', value: 'naturalEarth' }, { displayName: 'winkelTripel', value: 'winkelTripel' }, { displayName: 'equalEarth', value: 'equalEarth' }, { displayName: 'equirectangular', value: 'equirectangular' }, { displayName: 'lambertConformalConic', value: 'lambertConformalConic' }],
+        value: { displayName: 'mercator', value: 'mercator' }
+    });
+    centerLat = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        displayName: "Center Lat",
+        name: "centerLat",
+        value: this.lat
+    });
+    centerLong = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        displayName: "Center Long",
+        name: "centerLong",
+        value: this.long
+    });
+    zoomLevel = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "zoomLevel",
+        displayName: "Zoom Level",
+        value: 1
+    });
+    // topLevelSlice = this.textProperty;
+    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel];
+}
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ColorPicker */ .z.sk({
         name: "defaultColor",
@@ -270,13 +307,14 @@ class DataPointCardSettings extends FormattingSettingsCard {
 class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
-    cards = [this.dataPointCard];
+    directEditSettings = new DirectEditSettings();
+    cards = [this.dataPointCard, this.directEditSettings];
 }
 
 
 /***/ }),
 
-/***/ 54:
+/***/ 498:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -286,7 +324,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
 /*
 *  Power BI Visual CLI
 *
@@ -319,6 +357,11 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 
 
+let styleUrlLink = 'mapbox://styles/mapbox/streets-v9';
+let map_projection = 'mercator';
+let Maplat = 22.248110852414744;
+let long = 79.19163260780998;
+let zoomlvl = 1;
 class Visual {
     target;
     map;
@@ -330,18 +373,14 @@ class Visual {
         console.log('Visual constructor', options);
         this.formattingSettingsService = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .FormattingSettingsService */ .O();
         this.target = options.element;
-        //this.mapDiv = document.createElement('div');
-        //this.mapDiv.className = 'map';
-        //options.element.appendChild(this.mapDiv);
-        //const mapboxgl = require('mapbox-gl');
         (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().accessToken) = this.accessToken;
         this.host = options.host;
         this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
             container: this.target,
-            style: "mapbox://styles/mapbox/streets-v12",
-            center: [12.550343, 55.665957],
-            zoom: 9, // Default zoom level
-            //projection: 'globe',
+            style: styleUrlLink,
+            center: [long, Maplat],
+            zoom: zoomlvl,
+            projection: map_projection,
         });
         /*  if (document) {
   
@@ -373,8 +412,33 @@ class Visual {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
         console.log('Visual update', options);
         const dataView = options.dataViews[0];
-        const points = dataView.table.rows;
+        let style_Url = dataView.metadata.objects.directEdit.styleUrl;
+        let projection = dataView.metadata.objects.directEdit.projection;
+        let centerLat = dataView.metadata.objects.directEdit.centerLat;
+        let centerLong = dataView.metadata.objects.directEdit.centerLong;
+        let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel;
+        // const points = dataView.table.rows;
+        console.log('styleUrl', dataView.metadata.objects.directEdit);
+        console.log('styleUrlglobalid', this.map.style.globalId);
         // Add markers to the map
+        //  this.map.style.globalId = style_Url
+        let styleUrlLinkString = style_Url;
+        let mapProjection = projection;
+        let centerLatNumber = centerLat;
+        let centerLongNumber = centerLong;
+        let zoomLevelNumber = zoomlevel;
+        styleUrlLink = styleUrlLinkString;
+        Maplat = centerLatNumber;
+        long = centerLongNumber;
+        map_projection = mapProjection;
+        zoomlvl = zoomLevelNumber;
+        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
+            container: this.target,
+            style: styleUrlLink,
+            center: [long, Maplat],
+            zoom: zoomlvl,
+            projection: map_projection
+        });
         //const lng = Number(point[0]); // Convert to number
         //const lat = Number(point[1]); // Convert to number
         const lng = Number(55.70651);
@@ -398,7 +462,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(101);
+/* provided dependency */ var process = __webpack_require__(777);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -457,13 +521,15 @@ return mapboxgl$1;
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Kx: () => (/* binding */ Model),
+/* harmony export */   PA: () => (/* binding */ ItemDropdown),
 /* harmony export */   St: () => (/* binding */ CompositeCard),
 /* harmony export */   Tn: () => (/* binding */ SimpleCard),
+/* harmony export */   fs: () => (/* binding */ TextArea),
 /* harmony export */   iB: () => (/* binding */ NumUpDown),
 /* harmony export */   jF: () => (/* binding */ ToggleSwitch),
 /* harmony export */   sk: () => (/* binding */ ColorPicker)
 /* harmony export */ });
-/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, ItemDropdown, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextInput, TextArea, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
+/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextInput, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
 /* harmony import */ var _utils_FormattingSettingsUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(639);
 /**
  * Powerbi utils components classes for custom visual formatting pane objects
@@ -1122,7 +1188,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];

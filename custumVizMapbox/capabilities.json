@@ -12,6 +12,43 @@
         }
     ],
     "objects": {
+        "directEdit": {
+      "properties": {
+        "styleUrl": {
+          "displayName": "Style Url",
+          "type": {
+            "text": true
+          }
+        },
+        "projection": {
+            "displayName": "projection",
+            "type": {
+              "enumeration": [
+                { "displayName": "mercator", "value": "mercator" }, { "displayName": "globe", "value": "globe" },
+                { "displayName": "naturalEarth", "value": "naturalEarth" }, { "displayName": "winkelTripel", "value": "winkelTripel" },
+                { "displayName": "equalEarth", "value": "equalEarth" },{ "displayName": "equirectangular", "value": "equirectangular" }, { "displayName": "lambertConformalConic", "value": "lambertConformalConic" }
+              ]
+            }
+          },
+        "centerLat": {
+          "displayName": "Center Lat",
+          "type": {
+            "numeric": true
+          }
+        },
+        "centerLong": {
+            "displayName": "Center Long",
+            "type": {
+              "numeric": true
+            }
+          },
+        "zoomLevel": {
+            "displayName": "Zoom Level",
+            "type": {
+              "numeric": true
+            }
+          }
+        }},
         "dataPoint": {
             "properties": {
                 "defaultColor": {

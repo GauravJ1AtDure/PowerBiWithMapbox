@@ -31,10 +31,48 @@ import { formattingSettings } from "powerbi-visuals-utils-formattingmodel";
 import FormattingSettingsCard = formattingSettings.SimpleCard;
 import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
-
+import TextArea = formattingSettings.TextArea;
 /**
  * Data Point Formatting Card
  */
+
+class DirectEditSettings extends FormattingSettingsCard {
+    displayName = 'Direct Edit';
+    private lat: number = 22.248110852414744;
+    private long: number = 79.19163260780998;
+    name = 'directEdit';
+    //private minFontSize: number = 8;
+    //private defaultFontSize: number = 11;
+    //topLevelSlice = this.show;
+    styleUrl = new formattingSettings.TextArea({
+        displayName: "Style URL",
+        name: "styleUrl",
+        value: " ",
+        placeholder: "Add style url"
+    });
+    projection = new formattingSettings.ItemDropdown({
+        name: 'projection',
+        items: [{ displayName: 'mercator', value: 'mercator' },{ displayName: 'globe', value: 'globe' }, { displayName: 'naturalEarth', value: 'naturalEarth' }, { displayName: 'winkelTripel', value: 'winkelTripel' }, { displayName: 'equalEarth', value: 'equalEarth' }, { displayName: 'equirectangular', value: 'equirectangular' }, { displayName: 'lambertConformalConic', value: 'lambertConformalConic' }],
+        value: { displayName: 'mercator', value: 'mercator' }
+    });
+    centerLat = new formattingSettings.NumUpDown({
+        displayName: "Center Lat",
+        name: "centerLat",
+        value: this.lat
+    });
+    centerLong = new formattingSettings.NumUpDown({
+        displayName: "Center Long",
+        name: "centerLong",
+        value:this.long
+    });
+    zoomLevel = new formattingSettings.NumUpDown({
+        name: "zoomLevel",
+        displayName: "Zoom Level",
+        value: 1
+    })
+   // topLevelSlice = this.textProperty;
+    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
+}
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new formattingSettings.ColorPicker({
         name: "defaultColor",
@@ -78,6 +116,6 @@ class DataPointCardSettings extends FormattingSettingsCard {
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
-
-    cards = [this.dataPointCard];
+    directEditSettings = new DirectEditSettings();
+    cards = [this.dataPointCard, this.directEditSettings];
 }
