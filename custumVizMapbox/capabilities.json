@@ -1,13 +1,35 @@
 {
     "dataRoles": [
         {
-            "displayName": "Category Data",
-            "name": "category",
+            "displayName": "Tooltips",
+            "name": "tooltips",
+            "kind": "Grouping"
+        },
+        {
+            "displayName": "LAT",
+            "name": "latitude",
+            "kind": "Measure"
+            
+        },
+        {
+            "displayName": "LONG",
+            "name": "longitude",
+            "kind": "Measure"
+            
+        },
+        {
+            "displayName": "City",
+            "name": "city",
             "kind": "Grouping"
         },
         {
             "displayName": "Measure Data",
             "name": "measure",
+            "kind": "Measure"
+        },
+        {
+            "displayName": "Marker Colors",
+            "name": "markercolors",
             "kind": "Measure"
         }
     ],
@@ -15,18 +37,27 @@
         "directEdit": {
       "properties": {
         "styleUrl": {
-          "displayName": "Style Url",
-          "type": {
-            "text": true
-          }
-        },
+            "displayName": "Style",
+            "type": {
+              "enumeration": [
+                { "displayName": "standard", "value": "mapbox://styles/mapbox/standard" }, 
+                { "displayName": "standard-satellite", "value": "mapbox://styles/mapbox/standard-satellite" },
+                { "displayName": "streets-v12", "value": "mapbox://styles/mapbox/streets-v12" },
+                { "displayName": "outdoors-v12", "value": "mapbox://styles/mapbox/outdoors-v12" },
+                { "displayName": "light-v11", "value": "mapbox://styles/mapbox/light-v11" },
+                { "displayName": "dark-v11", "value": "mapbox://styles/mapbox/dark-v11" },
+                { "displayName": "satellite-v9", "value": "mapbox://styles/mapbox/satellite-v9" },
+                { "displayName": "satellite-streets-v12", "value": "mapbox://styles/mapbox/satellite-streets-v12" },
+                { "displayName": "navigation-day-v1", "value": "mapbox://styles/mapbox/navigation-day-v1" },
+                { "displayName": "navigation-night-v1", "value": "mapbox://styles/mapbox/navigation-night-v1" }
+              ]
+            }
+          },
         "projection": {
             "displayName": "projection",
             "type": {
               "enumeration": [
-                { "displayName": "mercator", "value": "mercator" }, { "displayName": "globe", "value": "globe" },
-                { "displayName": "naturalEarth", "value": "naturalEarth" }, { "displayName": "winkelTripel", "value": "winkelTripel" },
-                { "displayName": "equalEarth", "value": "equalEarth" },{ "displayName": "equirectangular", "value": "equirectangular" }, { "displayName": "lambertConformalConic", "value": "lambertConformalConic" }
+                { "displayName": "mercator", "value": "mercator" }, { "displayName": "globe", "value": "globe" }
               ]
             }
           },
@@ -46,6 +77,12 @@
             "displayName": "Zoom Level",
             "type": {
               "numeric": true
+            }
+          },
+          "geojsonLink": {
+            "displayName": "Geojson Link",
+            "type": {
+              "text": true
             }
           }
         }},
@@ -91,10 +128,41 @@
     },
     "dataViewMappings": [
         {
+            "table": {
+                "rows": {
+                    "select": [
+                        {
+                            "for": {
+                                "in": "tooltips"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "latitude"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "longitude"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "measure"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "markercolors"
+                            }
+                        }
+                    ]
+                }
+            },
             "categorical": {
                 "categories": {
                     "for": {
-                        "in": "category"
+                        "in": "city"
                     },
                     "dataReductionAlgorithm": {
                         "top": {}
@@ -102,15 +170,14 @@
                 },
                 "values": {
                     "select": [
-                        {
-                            "bind": {
-                                "to": "measure"
-                            }
-                        }
+                           { "bind": {"to": "measure"}},
+                            { "bind": { "to": "latitude" } },
+                        { "bind": { "to": "longitude" } },
+                        {"bind":{ "to": "markercolors"}}
                     ]
                 }
             }
         }
     ],
-    "privileges": [{ "name": "WebAccess", "essential": true, "parameters": [ "https://api.mapbox.com", "https://events.mapbox.com/" ] }]
+    "privileges": [{ "name": "WebAccess", "essential": true, "parameters": [ "https://api.mapbox.com", "https://events.mapbox.com/", "https://docs.mapbox.com", "https://raw.githubusercontent.com", "https://code.highcharts.com/" ] }]
 }

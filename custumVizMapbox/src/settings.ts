@@ -32,6 +32,7 @@ import FormattingSettingsCard = formattingSettings.SimpleCard;
 import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
 
+import TextInput = formattingSettings.TextInput;
 import TextArea = formattingSettings.TextArea;
 import NumUpDown = formattingSettings.NumUpDown;
 import ItemDropdown = formattingSettings.ItemDropdown;
@@ -48,35 +49,51 @@ class DirectEditSettings extends FormattingSettingsCard {
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
-    styleUrl = new formattingSettings.TextArea({
-        name: "styleUrl",
-        displayName: "Style URL",
-        value: "mapbox://styles/mapbox/streets-v9",
-        placeholder: ""
+    styleUrl = new formattingSettings.ItemDropdown({
+        name: 'styleUrl',
+        items: [{ displayName: 'standard', value: 'mapbox://styles/mapbox/standard' },
+            { displayName: 'standard-satellite', value: 'mapbox://styles/mapbox/standard-satellite' },
+            { displayName: 'streets-v12', value: 'mapbox://styles/mapbox/streets-v12' },
+            { displayName: 'outdoors-v12', value: 'mapbox://styles/mapbox/outdoors-v12' },
+            { displayName: 'light-v11', value: 'mapbox://styles/mapbox/light-v11' },
+            { displayName: 'dark-v11', value: 'mapbox://styles/mapbox/dark-v11' },
+            { displayName: 'satellite-v9', value: 'mapbox://styles/mapbox/satellite-v9' },
+            { displayName: 'satellite-streets-v12', value: 'mapbox://styles/mapbox/satellite-streets-v12' },
+            { displayName: 'navigation-day-v1', value: 'mapbox://styles/mapbox/navigation-day-v1' },
+            { displayName: 'navigation-night-v1', value: 'mapbox://styles/mapbox/navigation-night-v1' }],
+        value: { displayName: '', value: '' }
     });
     projection = new formattingSettings.ItemDropdown({
         name: 'projection',
-        items: [{ displayName: 'mercator', value: 'mercator' },{ displayName: 'globe', value: 'globe' }, { displayName: 'naturalEarth', value: 'naturalEarth' }, { displayName: 'winkelTripel', value: 'winkelTripel' }, { displayName: 'equalEarth', value: 'equalEarth' }, { displayName: 'equirectangular', value: 'equirectangular' }, { displayName: 'lambertConformalConic', value: 'lambertConformalConic' }],
+        items: [{ displayName: 'mercator', value: 'mercator' },{ displayName: 'globe', value: 'globe' }],
         value: { displayName: '', value: '' }
     });
     centerLat = new formattingSettings.NumUpDown({
         name: "centerLat",
         displayName: "Center Lat",
-        value:this.lat
+        value:null,
     });
     centerLong = new formattingSettings.NumUpDown({
         name: "centerLong",
         displayName: "Center Long",
-        value:this.long
+        value:null
     });
     zoomLevel = new formattingSettings.NumUpDown({
         name: "zoomLevel",
         displayName: "Zoom Level",
-        value:1
+        value:null
     });
+    geojsonLink = new formattingSettings.TextInput({
+        name: "geojsonLink",
+        displayName: "Geojson Link",
+        value:'',
+        placeholder:'link of the geojson'
+    })
    // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
+    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel, this.geojsonLink]
 }
+
+
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new formattingSettings.ColorPicker({
         name: "defaultColor",
@@ -121,5 +138,5 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
     directEditSettings = new DirectEditSettings();
-    cards = [this.dataPointCard, this.directEditSettings];
+    cards = [this.dataPointCard ,this.directEditSettings];
 }

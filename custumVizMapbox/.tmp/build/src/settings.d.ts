@@ -10,12 +10,13 @@ declare class DirectEditSettings extends FormattingSettingsCard {
     private lat;
     private long;
     name: string;
-    styleUrl: formattingSettings.TextArea;
+    styleUrl: formattingSettings.ItemDropdown;
     projection: formattingSettings.ItemDropdown;
     centerLat: formattingSettings.NumUpDown;
     centerLong: formattingSettings.NumUpDown;
     zoomLevel: formattingSettings.NumUpDown;
-    slices: (formattingSettings.TextArea | formattingSettings.ItemDropdown | formattingSettings.NumUpDown)[];
+    geojsonLink: formattingSettings.TextInput;
+    slices: (formattingSettings.ItemDropdown | formattingSettings.NumUpDown | formattingSettings.TextInput)[];
 }
 declare class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor: formattingSettings.ColorPicker;

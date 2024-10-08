@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 101:
+/***/ 777:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 239:
+/***/ 395:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -241,34 +241,48 @@ class DirectEditSettings extends FormattingSettingsCard {
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
-    styleUrl = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextArea */ .z.fs({
-        name: "styleUrl",
-        displayName: "Style URL",
-        value: "mapbox://styles/mapbox/streets-v9",
-        placeholder: ""
+    styleUrl = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ItemDropdown */ .z.PA({
+        name: 'styleUrl',
+        items: [{ displayName: 'standard', value: 'mapbox://styles/mapbox/standard' },
+            { displayName: 'standard-satellite', value: 'mapbox://styles/mapbox/standard-satellite' },
+            { displayName: 'streets-v12', value: 'mapbox://styles/mapbox/streets-v12' },
+            { displayName: 'outdoors-v12', value: 'mapbox://styles/mapbox/outdoors-v12' },
+            { displayName: 'light-v11', value: 'mapbox://styles/mapbox/light-v11' },
+            { displayName: 'dark-v11', value: 'mapbox://styles/mapbox/dark-v11' },
+            { displayName: 'satellite-v9', value: 'mapbox://styles/mapbox/satellite-v9' },
+            { displayName: 'satellite-streets-v12', value: 'mapbox://styles/mapbox/satellite-streets-v12' },
+            { displayName: 'navigation-day-v1', value: 'mapbox://styles/mapbox/navigation-day-v1' },
+            { displayName: 'navigation-night-v1', value: 'mapbox://styles/mapbox/navigation-night-v1' }],
+        value: { displayName: '', value: '' }
     });
     projection = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ItemDropdown */ .z.PA({
         name: 'projection',
-        items: [{ displayName: 'mercator', value: 'mercator' }, { displayName: 'globe', value: 'globe' }, { displayName: 'naturalEarth', value: 'naturalEarth' }, { displayName: 'winkelTripel', value: 'winkelTripel' }, { displayName: 'equalEarth', value: 'equalEarth' }, { displayName: 'equirectangular', value: 'equirectangular' }, { displayName: 'lambertConformalConic', value: 'lambertConformalConic' }],
+        items: [{ displayName: 'mercator', value: 'mercator' }, { displayName: 'globe', value: 'globe' }],
         value: { displayName: '', value: '' }
     });
     centerLat = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
         name: "centerLat",
         displayName: "Center Lat",
-        value: this.lat
+        value: null,
     });
     centerLong = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
         name: "centerLong",
         displayName: "Center Long",
-        value: this.long
+        value: null
     });
     zoomLevel = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
         name: "zoomLevel",
         displayName: "Zoom Level",
-        value: 1
+        value: null
+    });
+    geojsonLink = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "geojsonLink",
+        displayName: "Geojson Link",
+        value: '',
+        placeholder: 'link of the geojson'
     });
     // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel];
+    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel, this.geojsonLink];
 }
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ColorPicker */ .z.sk({
@@ -314,7 +328,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 /***/ }),
 
-/***/ 54:
+/***/ 498:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -324,7 +338,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
 /*
 *  Power BI Visual CLI
 *
@@ -375,59 +389,54 @@ class Visual {
         this.target = options.element;
         (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().accessToken) = this.accessToken;
         this.host = options.host;
-        console.log('Visual styleUrlLink', styleUrlLink);
+        //  console.log('Visual styleUrlLink', styleUrlLink);
+        if (document) {
+            if (!mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().supported()) {
+                alert('Your browser does not support Mapbox GL');
+            }
+            else {
+                this.initializeMap();
+            }
+        }
+    }
+    initializeMap() {
         this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
             container: this.target,
-            style: styleUrlLink,
-            center: [long, Maplat],
-            zoom: zoomlvl,
-            projection: map_projection,
+            style: 'mapbox://styles/mapbox/standard',
+            center: [79, 22],
+            zoom: 1,
+            projection: 'mercator',
         });
-        /*  if (document) {
-  
-              if (!mapboxgl.supported()) {
-                  alert('Your browser does not support Mapbox GL');
-              }
-              else{
-              this.initializeMap();
-              }
-          }
-              */
     }
-    /*
-        private initializeMap() {
-            this.map = new mapboxgl.Map({
-                container: this.target,
-                style: "mapbox://styles/mapbox/streets-v12",
-                center: [12.550343, 55.665957], // Default center
-                zoom: 9, // Default zoom level
-                //projection: 'globe',
-            });
-    
-            const marker1=new mapboxgl.Marker()
-            .setLngLat([12.554729, 55.70651])
-            .addTo(this.map);
-        }
-       */
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
         console.log('Visual update', options);
         const dataView = options.dataViews[0];
+        const locations = dataView.categorical.categories[0].values;
+        const latitudesData = dataView.categorical.values[0].values;
+        const longitudesData = dataView.categorical.values[1].values;
+        const mapData = dataView.categorical.values[2].values;
+        const markerColors = dataView.categorical.values[3].values;
         let style_Url = dataView.metadata.objects.directEdit.styleUrl;
         let projection = dataView.metadata.objects.directEdit.projection;
         let centerLat = dataView.metadata.objects.directEdit.centerLat;
         let centerLong = dataView.metadata.objects.directEdit.centerLong;
         let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel;
+        let geojsonLink = dataView.metadata.objects.directEdit.geojsonLink;
         // const points = dataView.table.rows;
         console.log('directEdit', dataView.metadata.objects.directEdit);
-        console.log('styleUrlglobalid', this.map.style.globalId);
+        console.log('locations', locations);
+        console.log('latitudesData', latitudesData);
+        console.log('longitudesData', longitudesData);
+        console.log('mapData', mapData);
+        console.log('markerColors', markerColors);
         // Add markers to the map
-        //  this.map.style.globalId = style_Url
         let styleUrlLinkString = style_Url;
         let mapProjection = projection;
         let centerLatNumber = centerLat;
         let centerLongNumber = centerLong;
         let zoomLevelNumber = zoomlevel;
+        let geoJsonLnk = geojsonLink;
         styleUrlLink = styleUrlLinkString;
         Maplat = centerLatNumber;
         long = centerLongNumber;
@@ -440,13 +449,35 @@ class Visual {
             zoom: zoomlvl,
             projection: map_projection
         });
-        //const lng = Number(point[0]); // Convert to number
-        //const lat = Number(point[1]); // Convert to number
-        const lng = Number(55.70651);
-        const lat = Number(12.554729);
-        const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)()
-            .setLngLat([12.554729, 55.70651])
-            .addTo(this.map);
+        for (let x = 0; x < locations.length; x++) {
+            let lat = latitudesData[x];
+            let lng = longitudesData[x];
+            let marker_colors = markerColors[x];
+            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(this.map);
+        }
+        this.map.on('load', () => {
+            // Add a source for the state polygons.
+            this.map.addSource('state', {
+                'type': 'geojson',
+                // 'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
+                //'data': 'https://raw.githubusercontent.com/adarshbiradar/maps-geojson/refs/heads/master/india.json'
+                'data': geoJsonLnk
+            });
+            // Add a layer showing the state polygons.
+            this.map.addLayer({
+                'id': 'states-layer',
+                'type': 'fill',
+                'source': 'state',
+                'paint': {
+                    'fill-color': 'rgba(200, 100, 240, 0.4)',
+                    'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                }
+            });
+        });
     }
     /**
      * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.
@@ -463,7 +494,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(101);
+/* provided dependency */ var process = __webpack_require__(777);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -525,12 +556,12 @@ return mapboxgl$1;
 /* harmony export */   PA: () => (/* binding */ ItemDropdown),
 /* harmony export */   St: () => (/* binding */ CompositeCard),
 /* harmony export */   Tn: () => (/* binding */ SimpleCard),
-/* harmony export */   fs: () => (/* binding */ TextArea),
 /* harmony export */   iB: () => (/* binding */ NumUpDown),
 /* harmony export */   jF: () => (/* binding */ ToggleSwitch),
+/* harmony export */   ks: () => (/* binding */ TextInput),
 /* harmony export */   sk: () => (/* binding */ ColorPicker)
 /* harmony export */ });
-/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextInput, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
+/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextArea, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
 /* harmony import */ var _utils_FormattingSettingsUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(639);
 /**
  * Powerbi utils components classes for custom visual formatting pane objects
@@ -1189,7 +1220,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];

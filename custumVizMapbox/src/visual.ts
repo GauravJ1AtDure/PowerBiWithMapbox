@@ -64,20 +64,14 @@ export class Visual implements IVisual {
         mapboxgl.accessToken = this.accessToken;
         this.host = options.host;
 
-        console.log('Visual styleUrlLink', styleUrlLink);
+      //  console.log('Visual styleUrlLink', styleUrlLink);
 
-        this.map = new mapboxgl.Map({
-            container: this.target,
-            style: styleUrlLink,
-            center: [long, Maplat], // Default center
-            zoom: zoomlvl, // Default zoom level
-            projection: map_projection,
-        })
+      
 
-       
+      
 
         
-      /*  if (document) {
+        if (document) {
 
             if (!mapboxgl.supported()) {
                 alert('Your browser does not support Mapbox GL');
@@ -86,25 +80,23 @@ export class Visual implements IVisual {
             this.initializeMap();
             }
         }
-            */
+            
     }
 
     
-/*
+
     private initializeMap() {
         this.map = new mapboxgl.Map({
             container: this.target,
-            style: "mapbox://styles/mapbox/streets-v12",
-            center: [12.550343, 55.665957], // Default center
-            zoom: 9, // Default zoom level
-            //projection: 'globe',
-        });
+            style: 'mapbox://styles/mapbox/standard',
+            center: [79, 22], // Default center
+            zoom: 1, // Default zoom level
+            projection: 'mercator',
+        })
 
-        const marker1=new mapboxgl.Marker()
-        .setLngLat([12.554729, 55.70651])
-        .addTo(this.map);
+       
     }
-   */ 
+   
 
     public update(options: VisualUpdateOptions) {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
@@ -112,27 +104,34 @@ export class Visual implements IVisual {
         console.log('Visual update', options);
         
         const dataView = options.dataViews[0];
+        const locations = dataView.categorical.categories[0].values
+        const latitudesData = dataView.categorical.values[0].values
+        const longitudesData = dataView.categorical.values[1].values
+        const mapData = dataView.categorical.values[2].values
+        const markerColors = dataView.categorical.values[3].values
+
         let style_Url = dataView.metadata.objects.directEdit.styleUrl
         let projection = dataView.metadata.objects.directEdit.projection
         let centerLat= dataView.metadata.objects.directEdit.centerLat
         let centerLong= dataView.metadata.objects.directEdit.centerLong
         let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel
+        let geojsonLink = dataView.metadata.objects.directEdit.geojsonLink
        // const points = dataView.table.rows;
        
        console.log('directEdit', dataView.metadata.objects.directEdit)
        
-       console.log('styleUrlglobalid', this.map.style.globalId)
+       console.log('locations', locations)
+       console.log('latitudesData', latitudesData)
+       console.log('longitudesData', longitudesData)
+       console.log('mapData', mapData)
+       console.log('markerColors', markerColors)
         // Add markers to the map
-
-      //  this.map.style.globalId = style_Url
-
-          
-
        let styleUrlLinkString: string = style_Url as string;
        let mapProjection: string = projection as string;
        let centerLatNumber: number = centerLat as number;
        let centerLongNumber: number = centerLong as number;
        let zoomLevelNumber: number = zoomlevel as number;
+       let geoJsonLnk: string = geojsonLink as string;
 
        styleUrlLink = styleUrlLinkString
        Maplat = centerLatNumber
@@ -147,18 +146,46 @@ export class Visual implements IVisual {
         zoom: zoomlvl,
         projection:map_projection
    })
-       
-            //const lng = Number(point[0]); // Convert to number
-            //const lat = Number(point[1]); // Convert to number
-            
-            const lng = Number(55.70651);
-            const lat = Number(12.554729);
 
-            const marker1=new mapboxgl.Marker()
-            .setLngLat([12.554729, 55.70651])
-            .addTo(this.map);
+   
+
+   for (let x = 0; x < locations.length; x++) {
+    let lat:number=latitudesData[x] as number;
+    let lng:number=longitudesData[x] as number;
+    let marker_colors:string=markerColors[x] as string;
+    const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+ 
+    const marker1=new mapboxgl.Marker({color: marker_colors})
+    .setLngLat([lng,lat])
+    .setPopup(popup)
+    .addTo(this.map);
+
+   }
+
+
+   this.map.on('load', () => {
+    // Add a source for the state polygons.
+    this.map.addSource('state', {
+        'type': 'geojson',
+       // 'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
+        //'data': 'https://raw.githubusercontent.com/adarshbiradar/maps-geojson/refs/heads/master/india.json'
+        'data': geoJsonLnk
+    });
+
+    // Add a layer showing the state polygons.
+    this.map.addLayer({
+        'id': 'states-layer',
+        'type': 'fill',
+        'source': 'state',
+        'paint': {
+            'fill-color': 'rgba(200, 100, 240, 0.4)',
+            'fill-outline-color': 'rgba(200, 100, 240, 1)'
+        }
+    });
+});
+ 
         
-    }
+}
 
     /**
      * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.
