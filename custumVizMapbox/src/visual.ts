@@ -64,12 +64,6 @@ export class Visual implements IVisual {
         mapboxgl.accessToken = this.accessToken;
         this.host = options.host;
 
-      //  console.log('Visual styleUrlLink', styleUrlLink);
-
-      
-
-      
-
         
         if (document) {
 
@@ -115,7 +109,8 @@ export class Visual implements IVisual {
         let centerLat= dataView.metadata.objects.directEdit.centerLat
         let centerLong= dataView.metadata.objects.directEdit.centerLong
         let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel
-        let geojsonLink = dataView.metadata.objects.directEdit.geojsonLink
+        let geojsonLink = dataView.metadata.objects.mapEdits.geojsonLink
+        let infoOnClick = dataView.metadata.objects.mapEdits.infoOnClick
        // const points = dataView.table.rows;
        
        console.log('directEdit', dataView.metadata.objects.directEdit)
@@ -132,6 +127,7 @@ export class Visual implements IVisual {
        let centerLongNumber: number = centerLong as number;
        let zoomLevelNumber: number = zoomlevel as number;
        let geoJsonLnk: string = geojsonLink as string;
+       
 
        styleUrlLink = styleUrlLinkString
        Maplat = centerLatNumber
@@ -181,6 +177,13 @@ export class Visual implements IVisual {
             'fill-color': 'rgba(200, 100, 240, 0.4)',
             'fill-outline-color': 'rgba(200, 100, 240, 1)'
         }
+    });
+
+    this.map.on('click', 'states-layer', (e) => {
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(e.features[0].properties.name)
+            .addTo(this.map);
     });
 });
  

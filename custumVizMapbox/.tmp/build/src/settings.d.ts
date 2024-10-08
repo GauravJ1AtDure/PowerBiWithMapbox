@@ -15,8 +15,13 @@ declare class DirectEditSettings extends FormattingSettingsCard {
     centerLat: formattingSettings.NumUpDown;
     centerLong: formattingSettings.NumUpDown;
     zoomLevel: formattingSettings.NumUpDown;
-    geojsonLink: formattingSettings.TextInput;
-    slices: (formattingSettings.ItemDropdown | formattingSettings.NumUpDown | formattingSettings.TextInput)[];
+    slices: (formattingSettings.ItemDropdown | formattingSettings.NumUpDown)[];
+}
+declare class MapSettings extends FormattingSettingsCard {
+    displayName: string;
+    name: string;
+    geojsonLink: formattingSettings.TextArea;
+    slices: formattingSettings.TextArea[];
 }
 declare class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor: formattingSettings.ColorPicker;
@@ -35,6 +40,7 @@ declare class DataPointCardSettings extends FormattingSettingsCard {
 export declare class VisualFormattingSettingsModel extends FormattingSettingsModel {
     dataPointCard: DataPointCardSettings;
     directEditSettings: DirectEditSettings;
-    cards: (DataPointCardSettings | DirectEditSettings)[];
+    mapSettings: MapSettings;
+    cards: (DataPointCardSettings | DirectEditSettings | MapSettings)[];
 }
 export {};

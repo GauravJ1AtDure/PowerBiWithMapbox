@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 777:
+/***/ 101:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 395:
+/***/ 239:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -275,14 +275,19 @@ class DirectEditSettings extends FormattingSettingsCard {
         displayName: "Zoom Level",
         value: null
     });
-    geojsonLink = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+    // topLevelSlice = this.textProperty;
+    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel];
+}
+class MapSettings extends FormattingSettingsCard {
+    displayName = 'Map Edits';
+    name = 'mapEdits';
+    geojsonLink = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextArea */ .z.fs({
         name: "geojsonLink",
         displayName: "Geojson Link",
         value: '',
         placeholder: 'link of the geojson'
     });
-    // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel, this.geojsonLink];
+    slices = [this.geojsonLink];
 }
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ColorPicker */ .z.sk({
@@ -322,13 +327,14 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
     directEditSettings = new DirectEditSettings();
-    cards = [this.dataPointCard, this.directEditSettings];
+    mapSettings = new MapSettings();
+    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings];
 }
 
 
 /***/ }),
 
-/***/ 498:
+/***/ 54:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -338,7 +344,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
 /*
 *  Power BI Visual CLI
 *
@@ -389,7 +395,6 @@ class Visual {
         this.target = options.element;
         (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().accessToken) = this.accessToken;
         this.host = options.host;
-        //  console.log('Visual styleUrlLink', styleUrlLink);
         if (document) {
             if (!mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().supported()) {
                 alert('Your browser does not support Mapbox GL');
@@ -422,7 +427,8 @@ class Visual {
         let centerLat = dataView.metadata.objects.directEdit.centerLat;
         let centerLong = dataView.metadata.objects.directEdit.centerLong;
         let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel;
-        let geojsonLink = dataView.metadata.objects.directEdit.geojsonLink;
+        let geojsonLink = dataView.metadata.objects.mapEdits.geojsonLink;
+        let infoOnClick = dataView.metadata.objects.mapEdits.infoOnClick;
         // const points = dataView.table.rows;
         console.log('directEdit', dataView.metadata.objects.directEdit);
         console.log('locations', locations);
@@ -477,6 +483,12 @@ class Visual {
                     'fill-outline-color': 'rgba(200, 100, 240, 1)'
                 }
             });
+            this.map.on('click', 'states-layer', (e) => {
+                new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)()
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties.name)
+                    .addTo(this.map);
+            });
         });
     }
     /**
@@ -494,7 +506,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(777);
+/* provided dependency */ var process = __webpack_require__(101);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -556,12 +568,12 @@ return mapboxgl$1;
 /* harmony export */   PA: () => (/* binding */ ItemDropdown),
 /* harmony export */   St: () => (/* binding */ CompositeCard),
 /* harmony export */   Tn: () => (/* binding */ SimpleCard),
+/* harmony export */   fs: () => (/* binding */ TextArea),
 /* harmony export */   iB: () => (/* binding */ NumUpDown),
 /* harmony export */   jF: () => (/* binding */ ToggleSwitch),
-/* harmony export */   ks: () => (/* binding */ TextInput),
 /* harmony export */   sk: () => (/* binding */ ColorPicker)
 /* harmony export */ });
-/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextArea, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
+/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextInput, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
 /* harmony import */ var _utils_FormattingSettingsUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(639);
 /**
  * Powerbi utils components classes for custom visual formatting pane objects
@@ -1220,7 +1232,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];

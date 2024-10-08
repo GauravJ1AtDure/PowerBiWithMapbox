@@ -83,16 +83,23 @@ class DirectEditSettings extends FormattingSettingsCard {
         displayName: "Zoom Level",
         value:null
     });
-    geojsonLink = new formattingSettings.TextInput({
+    
+   // topLevelSlice = this.textProperty;
+    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
+}
+
+class MapSettings extends FormattingSettingsCard {
+    displayName = 'Map Edits';
+    name = 'mapEdits';
+    geojsonLink = new formattingSettings.TextArea({
         name: "geojsonLink",
         displayName: "Geojson Link",
         value:'',
         placeholder:'link of the geojson'
     })
-   // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel, this.geojsonLink]
+   
+    slices= [this.geojsonLink]
 }
-
 
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new formattingSettings.ColorPicker({
@@ -138,5 +145,6 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
     directEditSettings = new DirectEditSettings();
-    cards = [this.dataPointCard ,this.directEditSettings];
+    mapSettings = new MapSettings();
+    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings];
 }

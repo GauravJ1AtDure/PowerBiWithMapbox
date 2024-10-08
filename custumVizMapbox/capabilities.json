@@ -78,14 +78,19 @@
             "type": {
               "numeric": true
             }
-          },
-          "geojsonLink": {
+          }
+          
+        }},
+        "mapEdits": {
+            "properties": {
+            "geojsonLink": {
             "displayName": "Geojson Link",
             "type": {
               "text": true
             }
           }
-        }},
+          
+            }},
         "dataPoint": {
             "properties": {
                 "defaultColor": {
