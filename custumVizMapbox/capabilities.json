@@ -1,11 +1,6 @@
 {
     "dataRoles": [
         {
-            "displayName": "Tooltips",
-            "name": "tooltips",
-            "kind": "Grouping"
-        },
-        {
             "displayName": "LAT",
             "name": "latitude",
             "kind": "Measure"
@@ -37,7 +32,7 @@
         "directEdit": {
       "properties": {
         "styleUrl": {
-            "displayName": "Style",
+            "displayName": "Base Layer",
             "type": {
               "enumeration": [
                 { "displayName": "standard", "value": "mapbox://styles/mapbox/standard" }, 
@@ -54,7 +49,7 @@
             }
           },
         "projection": {
-            "displayName": "projection",
+            "displayName": "Projection",
             "type": {
               "enumeration": [
                 { "displayName": "mercator", "value": "mercator" }, { "displayName": "globe", "value": "globe" }
@@ -88,8 +83,82 @@
             "type": {
               "text": true
             }
+          },
+          "infoOnClick": {
+            "displayName": "Data key for info",
+            "type": {
+              "text": true
+            }
           }
-          
+            }},
+            "choroplethRange": {
+            "properties": {
+                "dataKey": {
+                    "displayName": "Data key",
+                    "type": {
+                      "text": true
+                    }
+                  },
+            "range1Value": {
+            "displayName": "1st Range Value",
+            "type": {
+              "numeric": true
+            }
+          },
+          "range1Color": {
+            "displayName": "1st Range Color",
+            "type": {
+              "text": true
+            }
+          },
+          "range2Value": {
+            "displayName": "2nd Range Value",
+            "type": {
+              "numeric": true
+            }
+          },
+          "range2Color": {
+            "displayName": "2nd Range Color",
+            "type": {
+              "text": true
+            }
+          },
+          "range3Value": {
+            "displayName": "3rd Range Value",
+            "type": {
+              "numeric": true
+            }
+          },
+          "range3Color": {
+            "displayName": "3rd Range Color",
+            "type": {
+              "text": true
+            }
+          },
+          "range4Value": {
+            "displayName": "4th Range Value",
+            "type": {
+              "numeric": true
+            }
+          },
+          "range4Color": {
+            "displayName": "4th Range Color",
+            "type": {
+              "text": true
+            }
+          },
+          "range5Value": {
+            "displayName": "5th Range Value",
+            "type": {
+              "numeric": true
+            }
+          },
+          "range5Color": {
+            "displayName": "5th Range Color",
+            "type": {
+              "text": true
+            }
+          }
             }},
         "dataPoint": {
             "properties": {
@@ -138,11 +207,6 @@
                     "select": [
                         {
                             "for": {
-                                "in": "tooltips"
-                            }
-                        },
-                        {
-                            "for": {
                                 "in": "latitude"
                             }
                         },
@@ -184,5 +248,5 @@
             }
         }
     ],
-    "privileges": [{ "name": "WebAccess", "essential": true, "parameters": [ "https://api.mapbox.com", "https://events.mapbox.com/", "https://docs.mapbox.com", "https://raw.githubusercontent.com", "https://code.highcharts.com/" ] }]
+    "privileges": [{ "name": "WebAccess", "essential": true, "parameters": [ "https://api.mapbox.com", "https://events.mapbox.com/", "https://docs.mapbox.com", "https://raw.githubusercontent.com", "https://code.highcharts.com/", "https://*.arcgisonline.com" ] }]
 }

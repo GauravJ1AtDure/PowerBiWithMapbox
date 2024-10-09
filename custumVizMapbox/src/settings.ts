@@ -97,8 +97,82 @@ class MapSettings extends FormattingSettingsCard {
         value:'',
         placeholder:'link of the geojson'
     })
+    infoOnClick = new formattingSettings.TextInput({
+        name: "infoOnClick",
+        displayName: "Data key for info",
+        value:'',
+        placeholder:'Set data key for info'
+    })
    
-    slices= [this.geojsonLink]
+    slices= [this.geojsonLink, this.infoOnClick]
+}
+
+class ChoroplethSettings extends FormattingSettingsCard {
+    displayName = 'Choropleth Range';
+    name = 'choroplethRange';
+    dataKey = new formattingSettings.TextInput({
+        name: "dataKey",
+        displayName: "Data Key",
+        value:'',
+        placeholder:'Set data key'
+    })
+    range1Value = new formattingSettings.NumUpDown({
+        name: "range1Value",
+        displayName: "1st Range Value",
+        value:null,
+    })
+    range1Color = new formattingSettings.TextInput({
+        name: "range1Color",
+        displayName: "1st Range Color",
+        value:'',
+        placeholder:'set color'
+    })
+    range2Value = new formattingSettings.NumUpDown({
+        name: "range2Value",
+        displayName: "2nd Range Value",
+        value:null,
+    })
+    range2Color = new formattingSettings.TextInput({
+        name: "range2Color",
+        displayName: "2nd Range Color",
+        value:'',
+        placeholder:'set color'
+    })
+    range3Value = new formattingSettings.NumUpDown({
+        name: "range3Value",
+        displayName: "3rd Range Value",
+        value:null,
+    })
+    range3Color = new formattingSettings.TextInput({
+        name: "range3Color",
+        displayName: "3rd Range Color",
+        value:'',
+        placeholder:'set color'
+    })
+    range4Value = new formattingSettings.NumUpDown({
+        name: "range4Value",
+        displayName: "4th Range Value",
+        value:null,
+    })
+    range4Color = new formattingSettings.TextInput({
+        name: "range4Color",
+        displayName: "4th Range Color",
+        value:'',
+        placeholder:'set color'
+    })
+    range5Value = new formattingSettings.NumUpDown({
+        name: "range5Value",
+        displayName: "5th Range Value",
+        value:null,
+    })
+    range5Color = new formattingSettings.TextInput({
+        name: "range5Color",
+        displayName: "5th Range Color",
+        value:'',
+        placeholder:'set color'
+    })
+   
+    slices= [this.dataKey, this.range1Value, this.range1Color, this.range2Value, this.range2Color, this.range3Value, this.range3Color, this.range4Value, this.range4Color, this.range5Value, this.range5Color]
 }
 
 class DataPointCardSettings extends FormattingSettingsCard {
@@ -146,5 +220,6 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     dataPointCard = new DataPointCardSettings();
     directEditSettings = new DirectEditSettings();
     mapSettings = new MapSettings();
-    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings];
+    choroplethSettings = new ChoroplethSettings();
+    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings, this.choroplethSettings];
 }

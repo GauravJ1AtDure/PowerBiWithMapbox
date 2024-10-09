@@ -15,13 +15,30 @@ declare class DirectEditSettings extends FormattingSettingsCard {
     centerLat: formattingSettings.NumUpDown;
     centerLong: formattingSettings.NumUpDown;
     zoomLevel: formattingSettings.NumUpDown;
-    slices: (formattingSettings.ItemDropdown | formattingSettings.NumUpDown)[];
+    slices: (formattingSettings.NumUpDown | formattingSettings.ItemDropdown)[];
 }
 declare class MapSettings extends FormattingSettingsCard {
     displayName: string;
     name: string;
     geojsonLink: formattingSettings.TextArea;
-    slices: formattingSettings.TextArea[];
+    infoOnClick: formattingSettings.TextInput;
+    slices: formattingSettings.TextInput[];
+}
+declare class ChoroplethSettings extends FormattingSettingsCard {
+    displayName: string;
+    name: string;
+    dataKey: formattingSettings.TextInput;
+    range1Value: formattingSettings.NumUpDown;
+    range1Color: formattingSettings.TextInput;
+    range2Value: formattingSettings.NumUpDown;
+    range2Color: formattingSettings.TextInput;
+    range3Value: formattingSettings.NumUpDown;
+    range3Color: formattingSettings.TextInput;
+    range4Value: formattingSettings.NumUpDown;
+    range4Color: formattingSettings.TextInput;
+    range5Value: formattingSettings.NumUpDown;
+    range5Color: formattingSettings.TextInput;
+    slices: (formattingSettings.TextInput | formattingSettings.NumUpDown)[];
 }
 declare class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor: formattingSettings.ColorPicker;
@@ -41,6 +58,7 @@ export declare class VisualFormattingSettingsModel extends FormattingSettingsMod
     dataPointCard: DataPointCardSettings;
     directEditSettings: DirectEditSettings;
     mapSettings: MapSettings;
-    cards: (DataPointCardSettings | DirectEditSettings | MapSettings)[];
+    choroplethSettings: ChoroplethSettings;
+    cards: (DataPointCardSettings | DirectEditSettings | MapSettings | ChoroplethSettings)[];
 }
 export {};

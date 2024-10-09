@@ -48,6 +48,16 @@ let Maplat:number = 22
 let long:number = 79
 let zoomlvl:number = 1
 
+
+
+let style_Url =  "mapbox://styles/mapbox/standard"
+let projection =  "mercator"
+let centerLat=  20
+let centerLong=  -80
+let zoomlevel =  1
+let geojsonLink =  'apilink'
+let infoOnClick =  'etc'
+
 export class Visual implements IVisual {
     private target: HTMLElement;
     private map: mapboxgl.Map;
@@ -55,7 +65,6 @@ export class Visual implements IVisual {
     private host: IVisualHost;
     private formattingSettings: VisualFormattingSettingsModel;
     private formattingSettingsService: FormattingSettingsService;
-     
 
     constructor(options: VisualConstructorOptions) {
         console.log('Visual constructor', options);
@@ -96,30 +105,52 @@ export class Visual implements IVisual {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
 
         console.log('Visual update', options);
-        
         const dataView = options.dataViews[0];
-        const locations = dataView.categorical.categories[0].values
-        const latitudesData = dataView.categorical.values[0].values
-        const longitudesData = dataView.categorical.values[1].values
-        const mapData = dataView.categorical.values[2].values
-        const markerColors = dataView.categorical.values[3].values
-
-        let style_Url = dataView.metadata.objects.directEdit.styleUrl
-        let projection = dataView.metadata.objects.directEdit.projection
-        let centerLat= dataView.metadata.objects.directEdit.centerLat
-        let centerLong= dataView.metadata.objects.directEdit.centerLong
-        let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel
-        let geojsonLink = dataView.metadata.objects.mapEdits.geojsonLink
-        let infoOnClick = dataView.metadata.objects.mapEdits.infoOnClick
-       // const points = dataView.table.rows;
        
-       console.log('directEdit', dataView.metadata.objects.directEdit)
+        let locations=dataView.categorical.categories[0].values
+        let latitudesData=dataView.categorical.values[0].values
+        let longitudesData = dataView.categorical.values[1].values
+        let mapData = dataView.categorical.values[2].values
+        let markerColors = dataView.categorical.values[3].values
+           
+        let directEdit = dataView.metadata.objects.directEdit
+        let style_Url = directEdit.styleUrl
+        let projection = directEdit.projection
+        let centerLat= directEdit.centerLat
+        let centerLong= directEdit.centerLong
+        let zoomlevel = directEdit.zoomLevel
+
+        let mapEdits = dataView.metadata.objects.mapEdits
+        let geojsonLink = mapEdits.geojsonLink
+        let infoOnClick = mapEdits.infoOnClick
+
+        let choroplethRange = dataView.metadata.objects.choroplethRange
+        let dataKey = choroplethRange.dataKey
+        let range1Value = choroplethRange.range1Value
+        let range1Color = choroplethRange.range1Color
+        let range2Value = choroplethRange.range2Value
+        let range2Color = choroplethRange.range2Color
+        let range3Value = choroplethRange.range3Value
+        let range3Color = choroplethRange.range3Color
+        let range4Value = choroplethRange.range4Value
+        let range4Color = choroplethRange.range4Color
+        let range5Value = choroplethRange.range5Value
+        let range5Color = choroplethRange.range5Color
+
+
+      
+        
+       
+       console.log('directEdit', directEdit)
        
        console.log('locations', locations)
        console.log('latitudesData', latitudesData)
        console.log('longitudesData', longitudesData)
        console.log('mapData', mapData)
        console.log('markerColors', markerColors)
+       console.log('geojsonLink', geojsonLink)
+       console.log('infoOnClick', infoOnClick)
+
         // Add markers to the map
        let styleUrlLinkString: string = style_Url as string;
        let mapProjection: string = projection as string;
@@ -127,6 +158,7 @@ export class Visual implements IVisual {
        let centerLongNumber: number = centerLong as number;
        let zoomLevelNumber: number = zoomlevel as number;
        let geoJsonLnk: string = geojsonLink as string;
+       let infoOnClck: string = infoOnClick as string;
        
 
        styleUrlLink = styleUrlLinkString
@@ -160,6 +192,22 @@ export class Visual implements IVisual {
 
 
    this.map.on('load', () => {
+
+    this.map.addSource('modis-lst', {
+        'type': 'raster',
+        'tiles': [
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        ],
+        'tileSize': 256
+    });
+    
+    this.map.addLayer({
+        'id': 'modis-lst-layer',
+        'type': 'raster',
+        'source': 'modis-lst',
+        'paint': {}
+    });
+    
     // Add a source for the state polygons.
     this.map.addSource('state', {
         'type': 'geojson',
@@ -185,6 +233,29 @@ export class Visual implements IVisual {
             .setHTML(e.features[0].properties.name)
             .addTo(this.map);
     });
+    
+   
+
+    this.map.addLayer({
+        'id': 'choropleth',
+        'type': 'fill',
+        'source': 'state',
+        'layout': {},
+        'paint': {
+            'fill-color': [
+                'interpolate',
+                ['linear'],
+                ['get', dataKey],
+                range1Value, range1Color,
+                range2Value, range2Color,
+                range3Value, range3Color,
+                range4Value, range4Color,
+                range5Value, range5Color,
+            ],
+            'fill-opacity': 0.8
+        }
+    });
+
 });
  
         

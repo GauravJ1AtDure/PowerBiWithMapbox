@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 101:
+/***/ 777:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 239:
+/***/ 395:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -287,7 +287,79 @@ class MapSettings extends FormattingSettingsCard {
         value: '',
         placeholder: 'link of the geojson'
     });
-    slices = [this.geojsonLink];
+    infoOnClick = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "infoOnClick",
+        displayName: "Data key for info",
+        value: '',
+        placeholder: 'Set data key for info'
+    });
+    slices = [this.geojsonLink, this.infoOnClick];
+}
+class ChoroplethSettings extends FormattingSettingsCard {
+    displayName = 'Choropleth Range';
+    name = 'choroplethRange';
+    dataKey = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "dataKey",
+        displayName: "Data Key",
+        value: '',
+        placeholder: 'Set data key'
+    });
+    range1Value = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "range1Value",
+        displayName: "1st Range Value",
+        value: null,
+    });
+    range1Color = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "range1Color",
+        displayName: "1st Range Color",
+        value: '',
+        placeholder: 'set color'
+    });
+    range2Value = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "range2Value",
+        displayName: "2nd Range Value",
+        value: null,
+    });
+    range2Color = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "range2Color",
+        displayName: "2nd Range Color",
+        value: '',
+        placeholder: 'set color'
+    });
+    range3Value = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "range3Value",
+        displayName: "3rd Range Value",
+        value: null,
+    });
+    range3Color = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "range3Color",
+        displayName: "3rd Range Color",
+        value: '',
+        placeholder: 'set color'
+    });
+    range4Value = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "range4Value",
+        displayName: "4th Range Value",
+        value: null,
+    });
+    range4Color = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "range4Color",
+        displayName: "4th Range Color",
+        value: '',
+        placeholder: 'set color'
+    });
+    range5Value = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "range5Value",
+        displayName: "5th Range Value",
+        value: null,
+    });
+    range5Color = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "range5Color",
+        displayName: "5th Range Color",
+        value: '',
+        placeholder: 'set color'
+    });
+    slices = [this.dataKey, this.range1Value, this.range1Color, this.range2Value, this.range2Color, this.range3Value, this.range3Color, this.range4Value, this.range4Color, this.range5Value, this.range5Color];
 }
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ColorPicker */ .z.sk({
@@ -328,13 +400,14 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
     dataPointCard = new DataPointCardSettings();
     directEditSettings = new DirectEditSettings();
     mapSettings = new MapSettings();
-    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings];
+    choroplethSettings = new ChoroplethSettings();
+    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings, this.choroplethSettings];
 }
 
 
 /***/ }),
 
-/***/ 54:
+/***/ 498:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -344,7 +417,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
 /*
 *  Power BI Visual CLI
 *
@@ -382,6 +455,13 @@ let map_projection = 'mercator';
 let Maplat = 22;
 let long = 79;
 let zoomlvl = 1;
+let style_Url = "mapbox://styles/mapbox/standard";
+let projection = "mercator";
+let centerLat = 20;
+let centerLong = (/* unused pure expression or super */ null && (-80));
+let zoomlevel = 1;
+let geojsonLink = 'apilink';
+let infoOnClick = 'etc';
 class Visual {
     target;
     map;
@@ -417,25 +497,40 @@ class Visual {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
         console.log('Visual update', options);
         const dataView = options.dataViews[0];
-        const locations = dataView.categorical.categories[0].values;
-        const latitudesData = dataView.categorical.values[0].values;
-        const longitudesData = dataView.categorical.values[1].values;
-        const mapData = dataView.categorical.values[2].values;
-        const markerColors = dataView.categorical.values[3].values;
-        let style_Url = dataView.metadata.objects.directEdit.styleUrl;
-        let projection = dataView.metadata.objects.directEdit.projection;
-        let centerLat = dataView.metadata.objects.directEdit.centerLat;
-        let centerLong = dataView.metadata.objects.directEdit.centerLong;
-        let zoomlevel = dataView.metadata.objects.directEdit.zoomLevel;
-        let geojsonLink = dataView.metadata.objects.mapEdits.geojsonLink;
-        let infoOnClick = dataView.metadata.objects.mapEdits.infoOnClick;
-        // const points = dataView.table.rows;
-        console.log('directEdit', dataView.metadata.objects.directEdit);
+        let locations = dataView.categorical.categories[0].values;
+        let latitudesData = dataView.categorical.values[0].values;
+        let longitudesData = dataView.categorical.values[1].values;
+        let mapData = dataView.categorical.values[2].values;
+        let markerColors = dataView.categorical.values[3].values;
+        let directEdit = dataView.metadata.objects.directEdit;
+        let style_Url = directEdit.styleUrl;
+        let projection = directEdit.projection;
+        let centerLat = directEdit.centerLat;
+        let centerLong = directEdit.centerLong;
+        let zoomlevel = directEdit.zoomLevel;
+        let mapEdits = dataView.metadata.objects.mapEdits;
+        let geojsonLink = mapEdits.geojsonLink;
+        let infoOnClick = mapEdits.infoOnClick;
+        let choroplethRange = dataView.metadata.objects.choroplethRange;
+        let dataKey = choroplethRange.dataKey;
+        let range1Value = choroplethRange.range1Value;
+        let range1Color = choroplethRange.range1Color;
+        let range2Value = choroplethRange.range2Value;
+        let range2Color = choroplethRange.range2Color;
+        let range3Value = choroplethRange.range3Value;
+        let range3Color = choroplethRange.range3Color;
+        let range4Value = choroplethRange.range4Value;
+        let range4Color = choroplethRange.range4Color;
+        let range5Value = choroplethRange.range5Value;
+        let range5Color = choroplethRange.range5Color;
+        console.log('directEdit', directEdit);
         console.log('locations', locations);
         console.log('latitudesData', latitudesData);
         console.log('longitudesData', longitudesData);
         console.log('mapData', mapData);
         console.log('markerColors', markerColors);
+        console.log('geojsonLink', geojsonLink);
+        console.log('infoOnClick', infoOnClick);
         // Add markers to the map
         let styleUrlLinkString = style_Url;
         let mapProjection = projection;
@@ -443,6 +538,7 @@ class Visual {
         let centerLongNumber = centerLong;
         let zoomLevelNumber = zoomlevel;
         let geoJsonLnk = geojsonLink;
+        let infoOnClck = infoOnClick;
         styleUrlLink = styleUrlLinkString;
         Maplat = centerLatNumber;
         long = centerLongNumber;
@@ -466,6 +562,19 @@ class Visual {
                 .addTo(this.map);
         }
         this.map.on('load', () => {
+            this.map.addSource('modis-lst', {
+                'type': 'raster',
+                'tiles': [
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                ],
+                'tileSize': 256
+            });
+            this.map.addLayer({
+                'id': 'modis-lst-layer',
+                'type': 'raster',
+                'source': 'modis-lst',
+                'paint': {}
+            });
             // Add a source for the state polygons.
             this.map.addSource('state', {
                 'type': 'geojson',
@@ -489,6 +598,25 @@ class Visual {
                     .setHTML(e.features[0].properties.name)
                     .addTo(this.map);
             });
+            this.map.addLayer({
+                'id': 'choropleth',
+                'type': 'fill',
+                'source': 'state',
+                'layout': {},
+                'paint': {
+                    'fill-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', dataKey],
+                        range1Value, range1Color,
+                        range2Value, range2Color,
+                        range3Value, range3Color,
+                        range4Value, range4Color,
+                        range5Value, range5Color,
+                    ],
+                    'fill-opacity': 0.8
+                }
+            });
         });
     }
     /**
@@ -506,7 +634,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(101);
+/* provided dependency */ var process = __webpack_require__(777);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -571,9 +699,10 @@ return mapboxgl$1;
 /* harmony export */   fs: () => (/* binding */ TextArea),
 /* harmony export */   iB: () => (/* binding */ NumUpDown),
 /* harmony export */   jF: () => (/* binding */ ToggleSwitch),
+/* harmony export */   ks: () => (/* binding */ TextInput),
 /* harmony export */   sk: () => (/* binding */ ColorPicker)
 /* harmony export */ });
-/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, TextInput, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
+/* unused harmony exports CardGroupEntity, Group, SimpleSlice, AlignmentGroup, Slider, DatePicker, AutoDropdown, DurationPicker, ErrorRangeControl, FieldPicker, ItemFlagsSelection, AutoFlagsSelection, FontPicker, GradientBar, ImageUpload, ListEditor, ReadOnlyText, ShapeMapSelector, CompositeSlice, FontControl, MarginPadding, Container, ContainerItem */
 /* harmony import */ var _utils_FormattingSettingsUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(639);
 /**
  * Powerbi utils components classes for custom visual formatting pane objects
@@ -1232,7 +1361,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];
