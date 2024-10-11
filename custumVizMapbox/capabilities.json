@@ -29,7 +29,7 @@
         }
     ],
     "objects": {
-        "directEdit": {
+    "directEdit": {
       "properties": {
         "styleUrl": {
             "displayName": "Base Layer",
@@ -160,6 +160,45 @@
             }
           }
             }},
+            "radarSettings": {
+                "properties": {
+                "radarUrl": {
+                "displayName": "Radar Url",
+                "type": {
+                  "text": true
+                }
+            },
+
+            "radarLat_1": {
+                "displayName": "Radar Lat 1",
+                "type": {
+                  "numeric": true
+                }
+              },
+
+              "radarLong_1": {
+                "displayName": "Radar Long 1",
+                "type": {
+                  "numeric": true
+                }
+              },
+
+              "radarLat_2": {
+                "displayName": "Radar Lat 2",
+                "type": {
+                  "numeric": true
+                }
+              },
+
+              "radarLong_2": {
+                "displayName": "Radar Long 2",
+                "type": {
+                  "numeric": true
+                }
+              }
+             
+            }
+            },
         "dataPoint": {
             "properties": {
                 "defaultColor": {

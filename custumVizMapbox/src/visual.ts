@@ -42,14 +42,18 @@ import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 
 import { VisualFormattingSettingsModel } from "./settings";
 
-let styleUrlLink:string = 'mapbox://styles/mapbox/streets-v9'
-let map_projection:string = 'mercator'
-let Maplat:number = 22
-let long:number = 79
-let zoomlvl:number = 1
+var dataView
+
+var locations:string[] = ['']
+var latitudesData:number[] = [-71]
+var longitudesData:number[] = [52]
+var mapData:number[] = [0]
+var markerColors:string[] = ['transparent']
+
+var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat':20, 'centerLong':-80, 'zoomlevel':1}
 
 
-
+/*
 let style_Url =  "mapbox://styles/mapbox/standard"
 let projection =  "mercator"
 let centerLat=  20
@@ -57,7 +61,7 @@ let centerLong=  -80
 let zoomlevel =  1
 let geojsonLink =  'apilink'
 let infoOnClick =  'etc'
-
+*/
 export class Visual implements IVisual {
     private target: HTMLElement;
     private map: mapboxgl.Map;
@@ -86,114 +90,102 @@ export class Visual implements IVisual {
             
     }
 
-    
-
-    private initializeMap() {
-        this.map = new mapboxgl.Map({
-            container: this.target,
-            style: 'mapbox://styles/mapbox/standard',
-            center: [79, 22], // Default center
-            zoom: 1, // Default zoom level
-            projection: 'mercator',
-        })
-
-       
-    }
-   
-
     public update(options: VisualUpdateOptions) {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
 
         console.log('Visual update', options);
-        const dataView = options.dataViews[0];
-       
-        let locations=dataView.categorical.categories[0].values
-        let latitudesData=dataView.categorical.values[0].values
-        let longitudesData = dataView.categorical.values[1].values
-        let mapData = dataView.categorical.values[2].values
-        let markerColors = dataView.categorical.values[3].values
-           
-        let directEdit = dataView.metadata.objects.directEdit
-        let style_Url = directEdit.styleUrl
-        let projection = directEdit.projection
-        let centerLat= directEdit.centerLat
-        let centerLong= directEdit.centerLong
-        let zoomlevel = directEdit.zoomLevel
 
-        let mapEdits = dataView.metadata.objects.mapEdits
-        let geojsonLink = mapEdits.geojsonLink
-        let infoOnClick = mapEdits.infoOnClick
+        dataView = options.dataViews[0];
+        let dataViewLen = Object.keys(dataView).length
+        
 
-        let choroplethRange = dataView.metadata.objects.choroplethRange
-        let dataKey = choroplethRange.dataKey
-        let range1Value = choroplethRange.range1Value
-        let range1Color = choroplethRange.range1Color
-        let range2Value = choroplethRange.range2Value
-        let range2Color = choroplethRange.range2Color
-        let range3Value = choroplethRange.range3Value
-        let range3Color = choroplethRange.range3Color
-        let range4Value = choroplethRange.range4Value
-        let range4Color = choroplethRange.range4Color
-        let range5Value = choroplethRange.range5Value
-        let range5Color = choroplethRange.range5Color
+ 
+        let location=dataView.categorical.categories[0].values as typeof locations;
+        let lt = dataView.categorical.values[0].values as typeof latitudesData;
+        let lng = dataView.categorical.values[1].values as typeof longitudesData;
+        let mapDataVal = dataView.categorical.values[2].values as typeof mapData;
+        let markerCol= dataView.categorical.values[3].values as typeof markerColors;
 
+        
+        locations =  [...location];
+        latitudesData = [...lt];
+        longitudesData = [...lng];
+        mapData = [...mapDataVal];
+        markerColors = [...markerCol];
 
       
-        
-       
-       console.log('directEdit', directEdit)
-       
+        var directEdit1 = dataView.metadata.objects.directEdit
+        directEdit.style_Url = directEdit1.styleUrl as typeof directEdit.style_Url
+        directEdit.projection = directEdit1.projection as typeof directEdit.projection
+        directEdit.centerLat= directEdit1.centerLat as typeof directEdit.centerLat
+        directEdit.centerLong= directEdit1.centerLong as typeof directEdit.centerLong
+        directEdit.zoomlevel = directEdit1.zoomLevel as typeof directEdit.zoomlevel
+
+        this.initializeMap()
+
+        var mapEdits = dataView.metadata.objects.mapEdits || {'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick':'info'}
+        var geojsonLink = mapEdits.geojsonLink
+        var infoOnClick = mapEdits.infoOnClick
+
+        var choroplethRange = dataView.metadata.objects.choroplethRange || {'dataKey':'dataKey', 'range1Value':1, 'range1Color':'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color':'transparent', 'range5Value':5, 'range5Color': 'transparent'}
+        var dataKey = choroplethRange.dataKey
+        var range1Value = choroplethRange.range1Value
+        var range1Color = choroplethRange.range1Color
+        var range2Value = choroplethRange.range2Value
+        var range2Color = choroplethRange.range2Color
+        var range3Value = choroplethRange.range3Value
+        var range3Color = choroplethRange.range3Color
+        var range4Value = choroplethRange.range4Value
+        var range4Color = choroplethRange.range4Color
+        var range5Value = choroplethRange.range5Value
+        var range5Color = choroplethRange.range5Color
+
+        var radarSettings = dataView.metadata.objects.radarSettings || {'radarUrl':'s', 'radarLat_1':0, 'radarLong_1':0, 'radarLat_2':0, 'radarLong_2':0}
+        var radarUrl = radarSettings.radarUrl
+        var radarLat_1 =  radarSettings.radarLat_1
+        var radarLong_1 =  radarSettings.radarLong_1
+        var radarLat_2 =  radarSettings.radarLat_2
+        var radarLong_2 =  radarSettings.radarLong_2
+
+       console.log('dataViewLen', dataViewLen)
        console.log('locations', locations)
        console.log('latitudesData', latitudesData)
        console.log('longitudesData', longitudesData)
-       console.log('mapData', mapData)
        console.log('markerColors', markerColors)
-       console.log('geojsonLink', geojsonLink)
-       console.log('infoOnClick', infoOnClick)
+       console.log('mapData', mapData)
+      console.log('directEdit',directEdit)
+      // console.log('mapEdits',  Object.keys(mapEdits).length)
+      // console.log('choroplethRange', Object.keys(choroplethRange).length)
+      // console.log('radarCoordinates',radarCoordinates)
 
-        // Add markers to the map
-       let styleUrlLinkString: string = style_Url as string;
-       let mapProjection: string = projection as string;
-       let centerLatNumber: number = centerLat as number;
-       let centerLongNumber: number = centerLong as number;
-       let zoomLevelNumber: number = zoomlevel as number;
        let geoJsonLnk: string = geojsonLink as string;
        let infoOnClck: string = infoOnClick as string;
-       
+       let radarUrl_str:string=radarUrl as string;
+       let radarLt1: number = radarLat_1 as number;
+       let radarLng1: number = radarLong_1 as number;
+       let radarLt2: number = radarLat_2 as number;
+       let radarLng2: number = radarLong_2 as number;
 
-       styleUrlLink = styleUrlLinkString
-       Maplat = centerLatNumber
-       long = centerLongNumber
-       map_projection=mapProjection
-       zoomlvl = zoomLevelNumber
        
-       this.map = new mapboxgl.Map({
-        container: this.target,
-        style: styleUrlLink,
-        center: [long, Maplat],
-        zoom: zoomlvl,
-        projection:map_projection
-   })
-
    
 
-   for (let x = 0; x < locations.length; x++) {
-    let lat:number=latitudesData[x] as number;
-    let lng:number=longitudesData[x] as number;
-    let marker_colors:string=markerColors[x] as string;
-    const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+//    for (let x = 0; x < locations.length; x++) {
+//     let lat:number=latitudesData[x] as number;
+//     let lng:number=longitudesData[x] as number;
+//     let marker_colors:string=markerColors[x] as string;
+//     const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
  
-    const marker1=new mapboxgl.Marker({color: marker_colors})
-    .setLngLat([lng,lat])
-    .setPopup(popup)
-    .addTo(this.map);
+//     const marker1=new mapboxgl.Marker({color: marker_colors})
+//     .setLngLat([lng,lat])
+//     .setPopup(popup)
+//     .addTo(this.map);
 
-   }
+//    }
 
 
    this.map.on('load', () => {
 
-    this.map.addSource('modis-lst', {
+  /*  this.map.addSource('modis-lst', {
         'type': 'raster',
         'tiles': [
             'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
@@ -208,6 +200,40 @@ export class Visual implements IVisual {
         'paint': {}
     });
     
+
+    this.map.addSource('radar', {
+        'type': 'image',
+        'url': 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
+        'coordinates': [
+            [-80.425, 46.437],
+            [-71.516, 46.437],
+            [-71.516, 37.936],
+            [-80.425, 37.936]
+        ]
+    });
+*/
+
+    this.map.addSource('radar', {
+        'type': 'image',
+        'url': radarUrl_str,
+        'coordinates':  [ 
+            [radarLt1, radarLng1],
+            [radarLt2, radarLng1],
+            [radarLt2, radarLng2],
+            [radarLt1, radarLng2],
+            ]
+    });
+
+    this.map.addLayer({
+        id: 'radar-layer',
+        'type': 'raster',
+        'source': 'radar',
+        'paint': {
+            'raster-fade-duration': 0
+        }
+    });
+
+
     // Add a source for the state polygons.
     this.map.addSource('state', {
         'type': 'geojson',
@@ -259,6 +285,34 @@ export class Visual implements IVisual {
 });
  
         
+}
+
+
+private initializeMap() {
+    console.log('initializeMapdirectEdit',directEdit)
+    console.log('dataView', dataView);
+
+    this.map = new mapboxgl.Map({
+        container: this.target,
+        style: directEdit.style_Url,
+        center: [directEdit.centerLong, directEdit.centerLat], // Default center
+        zoom: directEdit.zoomlevel, // Default zoom level
+        projection: directEdit.projection,
+    })
+
+    for (let x = 0; x < locations.length; x++) {
+        let lat:number=latitudesData[x] as number;
+        let lng:number=longitudesData[x] as number;
+        let marker_colors:string=markerColors[x] as string;
+        const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+     
+        const marker1=new mapboxgl.Marker({color: marker_colors})
+        .setLngLat([lng,lat])
+        .setPopup(popup)
+        .addTo(this.map);
+    
+       }
+    
 }
 
     /**

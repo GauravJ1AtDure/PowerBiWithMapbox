@@ -361,6 +361,37 @@ class ChoroplethSettings extends FormattingSettingsCard {
     });
     slices = [this.dataKey, this.range1Value, this.range1Color, this.range2Value, this.range2Color, this.range3Value, this.range3Color, this.range4Value, this.range4Color, this.range5Value, this.range5Color];
 }
+class RadarSettings extends FormattingSettingsCard {
+    displayName = 'Radar Settings';
+    name = 'radarSettings';
+    radarUrl = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.TextInput */ .z.ks({
+        name: "radarUrl",
+        displayName: "radarUrl",
+        value: '',
+        placeholder: 'input radar url'
+    });
+    radarLat_1 = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "radarLat_1",
+        displayName: "Radar Lat 1",
+        value: null,
+    });
+    radarLong_1 = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "radarLong_1",
+        displayName: "Radar Long 1",
+        value: null,
+    });
+    radarLat_2 = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "radarLat_2",
+        displayName: "Radar Lat 2",
+        value: null,
+    });
+    radarLong_2 = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.NumUpDown */ .z.iB({
+        name: "radarLong_2",
+        displayName: "Radar Long 2",
+        value: null,
+    });
+    slices = [this.radarUrl, this.radarLat_1, this.radarLong_1, this.radarLat_2, this.radarLong_2];
+}
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ColorPicker */ .z.sk({
         name: "defaultColor",
@@ -401,7 +432,8 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
     directEditSettings = new DirectEditSettings();
     mapSettings = new MapSettings();
     choroplethSettings = new ChoroplethSettings();
-    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings, this.choroplethSettings];
+    radarSettings = new RadarSettings();
+    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
 }
 
 
@@ -450,18 +482,22 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 
 
-let styleUrlLink = 'mapbox://styles/mapbox/streets-v9';
-let map_projection = 'mercator';
-let Maplat = 22;
-let long = 79;
-let zoomlvl = 1;
-let style_Url = "mapbox://styles/mapbox/standard";
-let projection = "mercator";
-let centerLat = 20;
-let centerLong = (/* unused pure expression or super */ null && (-80));
-let zoomlevel = 1;
-let geojsonLink = 'apilink';
-let infoOnClick = 'etc';
+var dataView;
+var locations = [''];
+var latitudesData = [-71];
+var longitudesData = [52];
+var mapData = [0];
+var markerColors = ['transparent'];
+var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
+/*
+let style_Url =  "mapbox://styles/mapbox/standard"
+let projection =  "mercator"
+let centerLat=  20
+let centerLong=  -80
+let zoomlevel =  1
+let geojsonLink =  'apilink'
+let infoOnClick =  'etc'
+*/
 class Visual {
     target;
     map;
@@ -484,96 +520,121 @@ class Visual {
             }
         }
     }
-    initializeMap() {
-        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
-            container: this.target,
-            style: 'mapbox://styles/mapbox/standard',
-            center: [79, 22],
-            zoom: 1,
-            projection: 'mercator',
-        });
-    }
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
         console.log('Visual update', options);
-        const dataView = options.dataViews[0];
-        let locations = dataView.categorical.categories[0].values;
-        let latitudesData = dataView.categorical.values[0].values;
-        let longitudesData = dataView.categorical.values[1].values;
-        let mapData = dataView.categorical.values[2].values;
-        let markerColors = dataView.categorical.values[3].values;
-        let directEdit = dataView.metadata.objects.directEdit;
-        let style_Url = directEdit.styleUrl;
-        let projection = directEdit.projection;
-        let centerLat = directEdit.centerLat;
-        let centerLong = directEdit.centerLong;
-        let zoomlevel = directEdit.zoomLevel;
-        let mapEdits = dataView.metadata.objects.mapEdits;
-        let geojsonLink = mapEdits.geojsonLink;
-        let infoOnClick = mapEdits.infoOnClick;
-        let choroplethRange = dataView.metadata.objects.choroplethRange;
-        let dataKey = choroplethRange.dataKey;
-        let range1Value = choroplethRange.range1Value;
-        let range1Color = choroplethRange.range1Color;
-        let range2Value = choroplethRange.range2Value;
-        let range2Color = choroplethRange.range2Color;
-        let range3Value = choroplethRange.range3Value;
-        let range3Color = choroplethRange.range3Color;
-        let range4Value = choroplethRange.range4Value;
-        let range4Color = choroplethRange.range4Color;
-        let range5Value = choroplethRange.range5Value;
-        let range5Color = choroplethRange.range5Color;
-        console.log('directEdit', directEdit);
+        dataView = options.dataViews[0];
+        let dataViewLen = Object.keys(dataView).length;
+        let location = dataView.categorical.categories[0].values;
+        let lt = dataView.categorical.values[0].values;
+        let lng = dataView.categorical.values[1].values;
+        let mapDataVal = dataView.categorical.values[2].values;
+        let markerCol = dataView.categorical.values[3].values;
+        locations = [...location];
+        latitudesData = [...lt];
+        longitudesData = [...lng];
+        mapData = [...mapDataVal];
+        markerColors = [...markerCol];
+        var directEdit1 = dataView.metadata.objects.directEdit;
+        directEdit.style_Url = directEdit1.styleUrl;
+        directEdit.projection = directEdit1.projection;
+        directEdit.centerLat = directEdit1.centerLat;
+        directEdit.centerLong = directEdit1.centerLong;
+        directEdit.zoomlevel = directEdit1.zoomLevel;
+        this.initializeMap();
+        var mapEdits = dataView.metadata.objects.mapEdits || { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'info' };
+        var geojsonLink = mapEdits.geojsonLink;
+        var infoOnClick = mapEdits.infoOnClick;
+        var choroplethRange = dataView.metadata.objects.choroplethRange || { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
+        var dataKey = choroplethRange.dataKey;
+        var range1Value = choroplethRange.range1Value;
+        var range1Color = choroplethRange.range1Color;
+        var range2Value = choroplethRange.range2Value;
+        var range2Color = choroplethRange.range2Color;
+        var range3Value = choroplethRange.range3Value;
+        var range3Color = choroplethRange.range3Color;
+        var range4Value = choroplethRange.range4Value;
+        var range4Color = choroplethRange.range4Color;
+        var range5Value = choroplethRange.range5Value;
+        var range5Color = choroplethRange.range5Color;
+        var radarSettings = dataView.metadata.objects.radarSettings || { 'radarUrl': 's', 'radarLat_1': 0, 'radarLong_1': 0, 'radarLat_2': 0, 'radarLong_2': 0 };
+        var radarUrl = radarSettings.radarUrl;
+        var radarLat_1 = radarSettings.radarLat_1;
+        var radarLong_1 = radarSettings.radarLong_1;
+        var radarLat_2 = radarSettings.radarLat_2;
+        var radarLong_2 = radarSettings.radarLong_2;
+        console.log('dataViewLen', dataViewLen);
         console.log('locations', locations);
         console.log('latitudesData', latitudesData);
         console.log('longitudesData', longitudesData);
-        console.log('mapData', mapData);
         console.log('markerColors', markerColors);
-        console.log('geojsonLink', geojsonLink);
-        console.log('infoOnClick', infoOnClick);
-        // Add markers to the map
-        let styleUrlLinkString = style_Url;
-        let mapProjection = projection;
-        let centerLatNumber = centerLat;
-        let centerLongNumber = centerLong;
-        let zoomLevelNumber = zoomlevel;
+        console.log('mapData', mapData);
+        console.log('directEdit', directEdit);
+        // console.log('mapEdits',  Object.keys(mapEdits).length)
+        // console.log('choroplethRange', Object.keys(choroplethRange).length)
+        // console.log('radarCoordinates',radarCoordinates)
         let geoJsonLnk = geojsonLink;
         let infoOnClck = infoOnClick;
-        styleUrlLink = styleUrlLinkString;
-        Maplat = centerLatNumber;
-        long = centerLongNumber;
-        map_projection = mapProjection;
-        zoomlvl = zoomLevelNumber;
-        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
-            container: this.target,
-            style: styleUrlLink,
-            center: [long, Maplat],
-            zoom: zoomlvl,
-            projection: map_projection
-        });
-        for (let x = 0; x < locations.length; x++) {
-            let lat = latitudesData[x];
-            let lng = longitudesData[x];
-            let marker_colors = markerColors[x];
-            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
-            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
-                .setLngLat([lng, lat])
-                .setPopup(popup)
-                .addTo(this.map);
-        }
+        let radarUrl_str = radarUrl;
+        let radarLt1 = radarLat_1;
+        let radarLng1 = radarLong_1;
+        let radarLt2 = radarLat_2;
+        let radarLng2 = radarLong_2;
+        //    for (let x = 0; x < locations.length; x++) {
+        //     let lat:number=latitudesData[x] as number;
+        //     let lng:number=longitudesData[x] as number;
+        //     let marker_colors:string=markerColors[x] as string;
+        //     const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+        //     const marker1=new mapboxgl.Marker({color: marker_colors})
+        //     .setLngLat([lng,lat])
+        //     .setPopup(popup)
+        //     .addTo(this.map);
+        //    }
         this.map.on('load', () => {
-            this.map.addSource('modis-lst', {
-                'type': 'raster',
-                'tiles': [
-                    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                ],
-                'tileSize': 256
+            /*  this.map.addSource('modis-lst', {
+                  'type': 'raster',
+                  'tiles': [
+                      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                  ],
+                  'tileSize': 256
+              });
+              
+              this.map.addLayer({
+                  'id': 'modis-lst-layer',
+                  'type': 'raster',
+                  'source': 'modis-lst',
+                  'paint': {}
+              });
+              
+          
+              this.map.addSource('radar', {
+                  'type': 'image',
+                  'url': 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
+                  'coordinates': [
+                      [-80.425, 46.437],
+                      [-71.516, 46.437],
+                      [-71.516, 37.936],
+                      [-80.425, 37.936]
+                  ]
+              });
+          */
+            this.map.addSource('radar', {
+                'type': 'image',
+                'url': radarUrl_str,
+                'coordinates': [
+                    [radarLt1, radarLng1],
+                    [radarLt2, radarLng1],
+                    [radarLt2, radarLng2],
+                    [radarLt1, radarLng2],
+                ]
             });
             this.map.addLayer({
-                'id': 'modis-lst-layer',
+                id: 'radar-layer',
                 'type': 'raster',
-                'source': 'modis-lst',
-                'paint': {}
+                'source': 'radar',
+                'paint': {
+                    'raster-fade-duration': 0
+                }
             });
             // Add a source for the state polygons.
             this.map.addSource('state', {
@@ -618,6 +679,27 @@ class Visual {
                 }
             });
         });
+    }
+    initializeMap() {
+        console.log('initializeMapdirectEdit', directEdit);
+        console.log('dataView', dataView);
+        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
+            container: this.target,
+            style: directEdit.style_Url,
+            center: [directEdit.centerLong, directEdit.centerLat],
+            zoom: directEdit.zoomlevel,
+            projection: directEdit.projection,
+        });
+        for (let x = 0; x < locations.length; x++) {
+            let lat = latitudesData[x];
+            let lng = longitudesData[x];
+            let marker_colors = markerColors[x];
+            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(this.map);
+        }
     }
     /**
      * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.

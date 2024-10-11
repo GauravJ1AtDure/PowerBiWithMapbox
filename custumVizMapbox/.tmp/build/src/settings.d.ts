@@ -40,6 +40,16 @@ declare class ChoroplethSettings extends FormattingSettingsCard {
     range5Color: formattingSettings.TextInput;
     slices: (formattingSettings.TextInput | formattingSettings.NumUpDown)[];
 }
+declare class RadarSettings extends FormattingSettingsCard {
+    displayName: string;
+    name: string;
+    radarUrl: formattingSettings.TextInput;
+    radarLat_1: formattingSettings.NumUpDown;
+    radarLong_1: formattingSettings.NumUpDown;
+    radarLat_2: formattingSettings.NumUpDown;
+    radarLong_2: formattingSettings.NumUpDown;
+    slices: (formattingSettings.TextInput | formattingSettings.NumUpDown)[];
+}
 declare class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor: formattingSettings.ColorPicker;
     showAllDataPoints: formattingSettings.ToggleSwitch;
@@ -59,6 +69,7 @@ export declare class VisualFormattingSettingsModel extends FormattingSettingsMod
     directEditSettings: DirectEditSettings;
     mapSettings: MapSettings;
     choroplethSettings: ChoroplethSettings;
-    cards: (DataPointCardSettings | DirectEditSettings | MapSettings | ChoroplethSettings)[];
+    radarSettings: RadarSettings;
+    cards: (DataPointCardSettings | DirectEditSettings | MapSettings | ChoroplethSettings | RadarSettings)[];
 }
 export {};

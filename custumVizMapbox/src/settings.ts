@@ -175,6 +175,39 @@ class ChoroplethSettings extends FormattingSettingsCard {
     slices= [this.dataKey, this.range1Value, this.range1Color, this.range2Value, this.range2Color, this.range3Value, this.range3Color, this.range4Value, this.range4Color, this.range5Value, this.range5Color]
 }
 
+class RadarSettings extends FormattingSettingsCard {
+    displayName = 'Radar Settings';
+    name = 'radarSettings';
+    radarUrl = new formattingSettings.TextInput({
+        name: "radarUrl",
+        displayName: "radarUrl",
+        value: '',
+        placeholder:'input radar url'
+    });
+    radarLat_1 = new formattingSettings.NumUpDown({
+        name: "radarLat_1",
+        displayName: "Radar Lat 1",
+        value: null,
+    });
+    radarLong_1 = new formattingSettings.NumUpDown({
+        name: "radarLong_1",
+        displayName: "Radar Long 1",
+        value: null,
+    });
+    radarLat_2 = new formattingSettings.NumUpDown({
+        name: "radarLat_2",
+        displayName: "Radar Lat 2",
+        value: null,
+    });
+    radarLong_2 = new formattingSettings.NumUpDown({
+        name: "radarLong_2",
+        displayName: "Radar Long 2",
+        value: null,
+    });
+    
+    slices= [this.radarUrl, this.radarLat_1, this.radarLong_1, this.radarLat_2, this.radarLong_2]
+}
+
 class DataPointCardSettings extends FormattingSettingsCard {
     defaultColor = new formattingSettings.ColorPicker({
         name: "defaultColor",
@@ -221,5 +254,6 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     directEditSettings = new DirectEditSettings();
     mapSettings = new MapSettings();
     choroplethSettings = new ChoroplethSettings();
-    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings, this.choroplethSettings];
+    radarSettings = new RadarSettings();
+    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
 }
