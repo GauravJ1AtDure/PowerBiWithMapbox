@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 777:
+/***/ 101:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 395:
+/***/ 239:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -439,7 +439,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 /***/ }),
 
-/***/ 498:
+/***/ 54:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -449,7 +449,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
 /*
 *  Power BI Visual CLI
 *
@@ -483,12 +483,15 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 
 var dataView;
-var locations = [''];
-var latitudesData = [-71];
-var longitudesData = [52];
-var mapData = [0];
-var markerColors = ['transparent'];
+// var locations = ['']
+// var latitudesData = [-71]
+// var longitudesData = [52]
+// var mapData = [0]
+// var markerColors= ['transparent']
 var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
+var mapEdits = { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'name' };
+var choroplethRange = { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
+var radarSettings = { 'radarUrl': 's', 'radarLat_1': 0, 'radarLong_1': 0, 'radarLat_2': 0, 'radarLong_2': 0 };
 /*
 let style_Url =  "mapbox://styles/mapbox/standard"
 let projection =  "mercator"
@@ -511,6 +514,13 @@ class Visual {
         this.target = options.element;
         (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().accessToken) = this.accessToken;
         this.host = options.host;
+        // this.map = new mapboxgl.Map({
+        //             container: this.target,
+        //             style: directEdit.style_Url,
+        //             center: [directEdit.centerLong, directEdit.centerLat], // Default center
+        //             zoom: directEdit.zoomlevel, // Default zoom level
+        //             projection: directEdit.projection,
+        // })
         if (document) {
             if (!mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().supported()) {
                 alert('Your browser does not support Mapbox GL');
@@ -520,49 +530,98 @@ class Visual {
             }
         }
     }
+    initializeMap() {
+        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
+            container: this.target,
+            style: directEdit.style_Url,
+            center: [directEdit.centerLong, directEdit.centerLat],
+            zoom: directEdit.zoomlevel,
+            projection: directEdit.projection,
+        });
+    }
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
-        console.log('Visual update', options);
         dataView = options.dataViews[0];
-        let dataViewLen = Object.keys(dataView).length;
-        let location = dataView.categorical.categories[0].values;
-        let lt = dataView.categorical.values[0].values;
-        let lng = dataView.categorical.values[1].values;
-        let mapDataVal = dataView.categorical.values[2].values;
-        let markerCol = dataView.categorical.values[3].values;
-        locations = [...location];
-        latitudesData = [...lt];
-        longitudesData = [...lng];
-        mapData = [...mapDataVal];
-        markerColors = [...markerCol];
+        var locations = dataView.categorical.categories[0].values || [''];
+        var latitudesData = dataView.categorical.values[0].values || [-71];
+        var longitudesData = dataView.categorical.values[1].values || [52];
+        var mapData = dataView.categorical.values[2].values || [0];
+        var markerColors = dataView.categorical.values[3].values || ['transparent'];
+        // var locations = ['']
+        // var latitudesData = [-71]
+        // var longitudesData = [52]
+        // var mapData = [0]
+        // var markerColors= ['transparent']
+        console.log('Visual update', options);
+        console.log('locations', locations);
         var directEdit1 = dataView.metadata.objects.directEdit;
-        directEdit.style_Url = directEdit1.styleUrl;
-        directEdit.projection = directEdit1.projection;
-        directEdit.centerLat = directEdit1.centerLat;
-        directEdit.centerLong = directEdit1.centerLong;
-        directEdit.zoomlevel = directEdit1.zoomLevel;
+        var dataViewLen = Object.keys(dataView).length;
+        console.log('before', directEdit);
+        if (Object.keys(directEdit1).length === 5) {
+            directEdit.style_Url = directEdit1.styleUrl;
+            directEdit.projection = directEdit1.projection;
+            directEdit.centerLat = directEdit1.centerLat;
+            directEdit.centerLong = directEdit1.centerLong;
+            directEdit.zoomlevel = directEdit1.zoomLevel;
+        }
+        console.log('after', directEdit);
         this.initializeMap();
-        var mapEdits = dataView.metadata.objects.mapEdits || { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'info' };
-        var geojsonLink = mapEdits.geojsonLink;
-        var infoOnClick = mapEdits.infoOnClick;
-        var choroplethRange = dataView.metadata.objects.choroplethRange || { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
-        var dataKey = choroplethRange.dataKey;
-        var range1Value = choroplethRange.range1Value;
-        var range1Color = choroplethRange.range1Color;
-        var range2Value = choroplethRange.range2Value;
-        var range2Color = choroplethRange.range2Color;
-        var range3Value = choroplethRange.range3Value;
-        var range3Color = choroplethRange.range3Color;
-        var range4Value = choroplethRange.range4Value;
-        var range4Color = choroplethRange.range4Color;
-        var range5Value = choroplethRange.range5Value;
-        var range5Color = choroplethRange.range5Color;
-        var radarSettings = dataView.metadata.objects.radarSettings || { 'radarUrl': 's', 'radarLat_1': 0, 'radarLong_1': 0, 'radarLat_2': 0, 'radarLong_2': 0 };
-        var radarUrl = radarSettings.radarUrl;
-        var radarLat_1 = radarSettings.radarLat_1;
-        var radarLong_1 = radarSettings.radarLong_1;
-        var radarLat_2 = radarSettings.radarLat_2;
-        var radarLong_2 = radarSettings.radarLong_2;
+        /*  this.map = new mapboxgl.Map({
+                      container: this.target,
+                      style: directEdit.style_Url,
+                      center: [directEdit.centerLong, directEdit.centerLat], // Default center
+                      zoom: directEdit.zoomlevel, // Default zoom level
+                      projection: directEdit.projection,
+                  })
+  */
+        for (let x = 0; x < locations.length; x++) {
+            let lat = latitudesData[x];
+            let lng = longitudesData[x];
+            let marker_colors = markerColors[x];
+            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(this.map);
+            // marker1.remove();
+        }
+        console.log('before mapEdits', mapEdits);
+        var mapEdits1 = dataView.metadata.objects.mapEdits;
+        mapEdits.geojsonLink = mapEdits1.geojsonLink;
+        mapEdits.infoOnClick = mapEdits1.infoOnClick;
+        console.log('after mapEdits', mapEdits1);
+        // locations = dataView.categorical.categories[0].values as typeof locations;
+        // latitudesData = dataView.categorical.values[0].values as typeof latitudesData;
+        // longitudesData = dataView.categorical.values[1].values as typeof longitudesData;
+        // mapData = dataView.categorical.values[2].values as typeof mapData;
+        // markerColors= dataView.categorical.values[3].values as typeof markerColors;
+        console.log('dataViewLen', dataViewLen);
+        // locations = [...dataView.categorical.categories[0].values]
+        // latitudesData = [...dataView.categorical.values[0].values]
+        // longitudesData = [...dataView.categorical.values[1].values]
+        // mapData= [...dataView.categorical.values[2].values]
+        // markerColors = [...dataView.categorical.values[3].values]
+        //this.initializeMap()
+        console.log('locations2', locations);
+        //     this.initializeMap()
+        var choroplethRange1 = dataView.metadata.objects.choroplethRange;
+        choroplethRange.dataKey = choroplethRange1.dataKey;
+        choroplethRange.range1Value = choroplethRange1.range1Value;
+        choroplethRange.range1Color = choroplethRange1.range1Color;
+        choroplethRange.range2Value = choroplethRange1.range2Value;
+        choroplethRange.range2Color = choroplethRange1.range2Color;
+        choroplethRange.range3Value = choroplethRange1.range3Value;
+        choroplethRange.range3Color = choroplethRange1.range3Color;
+        choroplethRange.range4Value = choroplethRange1.range4Value;
+        choroplethRange.range4Color = choroplethRange1.range4Color;
+        choroplethRange.range5Value = choroplethRange1.range5Value;
+        choroplethRange.range5Color = choroplethRange1.range5Color;
+        var radarSettings1 = dataView.metadata.objects.radarSettings;
+        radarSettings.radarUrl = radarSettings1.radarUrl;
+        radarSettings.radarLat_1 = radarSettings1.radarLat_1;
+        radarSettings.radarLong_1 = radarSettings1.radarLong_1;
+        radarSettings.radarLat_2 = radarSettings1.radarLat_2;
+        radarSettings.radarLong_2 = radarSettings1.radarLong_2;
         console.log('dataViewLen', dataViewLen);
         console.log('locations', locations);
         console.log('latitudesData', latitudesData);
@@ -573,23 +632,23 @@ class Visual {
         // console.log('mapEdits',  Object.keys(mapEdits).length)
         // console.log('choroplethRange', Object.keys(choroplethRange).length)
         // console.log('radarCoordinates',radarCoordinates)
-        let geoJsonLnk = geojsonLink;
-        let infoOnClck = infoOnClick;
-        let radarUrl_str = radarUrl;
-        let radarLt1 = radarLat_1;
-        let radarLng1 = radarLong_1;
-        let radarLt2 = radarLat_2;
-        let radarLng2 = radarLong_2;
-        //    for (let x = 0; x < locations.length; x++) {
-        //     let lat:number=latitudesData[x] as number;
-        //     let lng:number=longitudesData[x] as number;
-        //     let marker_colors:string=markerColors[x] as string;
-        //     const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
-        //     const marker1=new mapboxgl.Marker({color: marker_colors})
-        //     .setLngLat([lng,lat])
-        //     .setPopup(popup)
-        //     .addTo(this.map);
-        //    }
+        // let geoJsonLnk: string = geojsonLink as string;
+        // let infoOnClck: string = infoOnClick as string;
+        //    let radarUrl_str:string=radarUrl as string;
+        //    let radarLt1: number = radarLat_1 as number;
+        //    let radarLng1: number = radarLong_1 as number;
+        //    let radarLt2: number = radarLat_2 as number;
+        //    let radarLng2: number = radarLong_2 as number;
+        for (let x = 0; x < locations.length; x++) {
+            let lat = latitudesData[x];
+            let lng = longitudesData[x];
+            let marker_colors = markerColors[x];
+            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(this.map);
+        }
         this.map.on('load', () => {
             /*  this.map.addSource('modis-lst', {
                   'type': 'raster',
@@ -620,12 +679,12 @@ class Visual {
           */
             this.map.addSource('radar', {
                 'type': 'image',
-                'url': radarUrl_str,
+                'url': radarSettings.radarUrl,
                 'coordinates': [
-                    [radarLt1, radarLng1],
-                    [radarLt2, radarLng1],
-                    [radarLt2, radarLng2],
-                    [radarLt1, radarLng2],
+                    [radarSettings.radarLat_1, radarSettings.radarLong_1],
+                    [radarSettings.radarLat_2, radarSettings.radarLong_1],
+                    [radarSettings.radarLat_2, radarSettings.radarLong_2],
+                    [radarSettings.radarLat_1, radarSettings.radarLong_2],
                 ]
             });
             this.map.addLayer({
@@ -639,9 +698,9 @@ class Visual {
             // Add a source for the state polygons.
             this.map.addSource('state', {
                 'type': 'geojson',
-                // 'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
+                //'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
                 //'data': 'https://raw.githubusercontent.com/adarshbiradar/maps-geojson/refs/heads/master/india.json'
-                'data': geoJsonLnk
+                'data': mapEdits.geojsonLink
             });
             // Add a layer showing the state polygons.
             this.map.addLayer({
@@ -668,38 +727,17 @@ class Visual {
                     'fill-color': [
                         'interpolate',
                         ['linear'],
-                        ['get', dataKey],
-                        range1Value, range1Color,
-                        range2Value, range2Color,
-                        range3Value, range3Color,
-                        range4Value, range4Color,
-                        range5Value, range5Color,
+                        ['get', choroplethRange.dataKey],
+                        choroplethRange.range1Value, choroplethRange.range1Color,
+                        choroplethRange.range2Value, choroplethRange.range2Color,
+                        choroplethRange.range3Value, choroplethRange.range3Color,
+                        choroplethRange.range4Value, choroplethRange.range4Color,
+                        choroplethRange.range5Value, choroplethRange.range5Color,
                     ],
                     'fill-opacity': 0.8
                 }
             });
         });
-    }
-    initializeMap() {
-        console.log('initializeMapdirectEdit', directEdit);
-        console.log('dataView', dataView);
-        this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
-            container: this.target,
-            style: directEdit.style_Url,
-            center: [directEdit.centerLong, directEdit.centerLat],
-            zoom: directEdit.zoomlevel,
-            projection: directEdit.projection,
-        });
-        for (let x = 0; x < locations.length; x++) {
-            let lat = latitudesData[x];
-            let lng = longitudesData[x];
-            let marker_colors = markerColors[x];
-            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
-            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
-                .setLngLat([lng, lat])
-                .setPopup(popup)
-                .addTo(this.map);
-        }
     }
     /**
      * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.
@@ -716,7 +754,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(777);
+/* provided dependency */ var process = __webpack_require__(101);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -1443,7 +1481,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];
