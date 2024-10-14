@@ -44,11 +44,14 @@ import { VisualFormattingSettingsModel } from "./settings";
 
 var dataView
 
-// var locations = ['']
-// var latitudesData = [-71]
-// var longitudesData = [52]
-// var mapData = [0]
-// var markerColors= ['transparent']
+var locations = ['']
+var latitudesData = [-71]
+var longitudesData = [52]
+var mapData = [0]
+var markerColors= ['transparent']
+
+
+      
 
 var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat':20, 'centerLong':-80, 'zoomlevel':1}
 
@@ -113,22 +116,48 @@ export class Visual implements IVisual {
             zoom: directEdit.zoomlevel, // Default zoom level
             projection: directEdit.projection,
         })
-
-        
-
-
+     
     }
+
+   
 
 
     public update(options: VisualUpdateOptions) {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
         dataView = options.dataViews[0];
-        var locations = dataView.categorical.categories[0].values || ['']
-        var latitudesData = dataView.categorical.values[0].values || [-71]
-        var longitudesData = dataView.categorical.values[1].values || [52]
-        var mapData= dataView.categorical.values[2].values || [0]
-        var markerColors = dataView.categorical.values[3].values || ['transparent']
+
+
+         locations = [...dataView.categorical.categories[0].values]
+         latitudesData = [...dataView.categorical.values[0].values]
+         longitudesData = [...dataView.categorical.values[1].values]
+         mapData= [...dataView.categorical.values[2].values]
+         markerColors = [...dataView.categorical.values[3].values]
+
+         var a = [-71]
+         var b = [52]
+         var c = [0]
+
+        if ( locations.length === 1 && latitudesData.length === 1 && longitudesData.length === 1 
+         && mapData.length === 1  && markerColors.length === 1  )
+            {
+            locations = [...'']
+            latitudesData = [...a]
+            longitudesData = [...b]
+            mapData = [...c]
+            markerColors= [...'transparent']
+            }
+            else{
+                locations = [...dataView.categorical.categories[0].values]
+                latitudesData = [...dataView.categorical.values[0].values]
+                longitudesData = [...dataView.categorical.values[1].values]
+                mapData= [...dataView.categorical.values[2].values]
+                markerColors = [...dataView.categorical.values[3].values]
+                
+            }
+
         
+        
+
         // var locations = ['']
 // var latitudesData = [-71]
 // var longitudesData = [52]
@@ -153,10 +182,10 @@ export class Visual implements IVisual {
         }
         console.log('after', directEdit);
 
-        this.initializeMap()
+      this.initializeMap()
 
 
-      /*  this.map = new mapboxgl.Map({
+      /* this.map = new mapboxgl.Map({
                     container: this.target,
                     style: directEdit.style_Url,
                     center: [directEdit.centerLong, directEdit.centerLat], // Default center
@@ -177,9 +206,8 @@ export class Visual implements IVisual {
            // marker1.remove();
            }
        
-        
           
-       
+         //this.initializeMap()
 
         console.log('before mapEdits', mapEdits);
        
@@ -265,18 +293,18 @@ export class Visual implements IVisual {
        
    
 
-   for (let x = 0; x < locations.length; x++) {
-    let lat:number=latitudesData[x] as number;
-    let lng:number=longitudesData[x] as number;
-    let marker_colors:string=markerColors[x] as string;
-    const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+//    for (let x = 0; x < locations.length; x++) {
+//     let lat:number=latitudesData[x] as number;
+//     let lng:number=longitudesData[x] as number;
+//     let marker_colors:string=markerColors[x] as string;
+//     const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
  
-    const marker1=new mapboxgl.Marker({color: marker_colors})
-    .setLngLat([lng,lat])
-    .setPopup(popup)
-    .addTo(this.map);
+//     const marker1=new mapboxgl.Marker({color: marker_colors})
+//     .setLngLat([lng,lat])
+//     .setPopup(popup)
+//     .addTo(this.map);
 
-   }
+//    }
 
 
 
@@ -338,6 +366,7 @@ export class Visual implements IVisual {
         //'data': 'https://raw.githubusercontent.com/adarshbiradar/maps-geojson/refs/heads/master/india.json'
         'data': mapEdits.geojsonLink
     });
+  
 
     // Add a layer showing the state polygons.
     this.map.addLayer({

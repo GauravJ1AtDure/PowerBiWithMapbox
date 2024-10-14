@@ -483,11 +483,11 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 
 var dataView;
-// var locations = ['']
-// var latitudesData = [-71]
-// var longitudesData = [52]
-// var mapData = [0]
-// var markerColors= ['transparent']
+var locations = [''];
+var latitudesData = [-71];
+var longitudesData = [52];
+var mapData = [0];
+var markerColors = ['transparent'];
 var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
 var mapEdits = { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'name' };
 var choroplethRange = { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
@@ -542,11 +542,29 @@ class Visual {
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
         dataView = options.dataViews[0];
-        var locations = dataView.categorical.categories[0].values || [''];
-        var latitudesData = dataView.categorical.values[0].values || [-71];
-        var longitudesData = dataView.categorical.values[1].values || [52];
-        var mapData = dataView.categorical.values[2].values || [0];
-        var markerColors = dataView.categorical.values[3].values || ['transparent'];
+        locations = [...dataView.categorical.categories[0].values];
+        latitudesData = [...dataView.categorical.values[0].values];
+        longitudesData = [...dataView.categorical.values[1].values];
+        mapData = [...dataView.categorical.values[2].values];
+        markerColors = [...dataView.categorical.values[3].values];
+        var a = [-71];
+        var b = [52];
+        var c = [0];
+        if (locations.length === 1 && latitudesData.length === 1 && longitudesData.length === 1
+            && mapData.length === 1 && markerColors.length === 1) {
+            locations = [...''];
+            latitudesData = [...a];
+            longitudesData = [...b];
+            mapData = [...c];
+            markerColors = [...'transparent'];
+        }
+        else {
+            locations = [...dataView.categorical.categories[0].values];
+            latitudesData = [...dataView.categorical.values[0].values];
+            longitudesData = [...dataView.categorical.values[1].values];
+            mapData = [...dataView.categorical.values[2].values];
+            markerColors = [...dataView.categorical.values[3].values];
+        }
         // var locations = ['']
         // var latitudesData = [-71]
         // var longitudesData = [52]
@@ -566,7 +584,7 @@ class Visual {
         }
         console.log('after', directEdit);
         this.initializeMap();
-        /*  this.map = new mapboxgl.Map({
+        /* this.map = new mapboxgl.Map({
                       container: this.target,
                       style: directEdit.style_Url,
                       center: [directEdit.centerLong, directEdit.centerLat], // Default center
@@ -585,6 +603,7 @@ class Visual {
                 .addTo(this.map);
             // marker1.remove();
         }
+        //this.initializeMap()
         console.log('before mapEdits', mapEdits);
         var mapEdits1 = dataView.metadata.objects.mapEdits;
         mapEdits.geojsonLink = mapEdits1.geojsonLink;
@@ -639,16 +658,16 @@ class Visual {
         //    let radarLng1: number = radarLong_1 as number;
         //    let radarLt2: number = radarLat_2 as number;
         //    let radarLng2: number = radarLong_2 as number;
-        for (let x = 0; x < locations.length; x++) {
-            let lat = latitudesData[x];
-            let lng = longitudesData[x];
-            let marker_colors = markerColors[x];
-            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
-            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
-                .setLngLat([lng, lat])
-                .setPopup(popup)
-                .addTo(this.map);
-        }
+        //    for (let x = 0; x < locations.length; x++) {
+        //     let lat:number=latitudesData[x] as number;
+        //     let lng:number=longitudesData[x] as number;
+        //     let marker_colors:string=markerColors[x] as string;
+        //     const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+        //     const marker1=new mapboxgl.Marker({color: marker_colors})
+        //     .setLngLat([lng,lat])
+        //     .setPopup(popup)
+        //     .addTo(this.map);
+        //    }
         this.map.on('load', () => {
             /*  this.map.addSource('modis-lst', {
                   'type': 'raster',
