@@ -551,16 +551,56 @@ class Visual {
         //     dataView = options.dataViews[0];
         // }
         dataView = options.dataViews[0];
-        var locations = (dataView.categorical.categories[0].values) ? dataView.categorical.categories[0].values : [''];
-        var latitudesData = (dataView.categorical.values[0].values) ? dataView.categorical.values[0].values : [0];
-        var longitudesData = (dataView.categorical.values[1].values) ? dataView.categorical.values[1].values : [0];
-        var mapData = (dataView.categorical.values[2].values) ? dataView.categorical.values[2].values : [0];
-        var markerColors = (dataView.categorical.values[3].values) ? dataView.categorical.values[3].values : ['red'];
+        var dataObj = { 'locations': dataView.categorical.categories[0].values,
+            'latitudesData': dataView.categorical.values[0].values,
+            'longitudesData': dataView.categorical.values[1].values,
+            'mapData': dataView.categorical.values[2].values,
+            'markerColors': dataView.categorical.values[3].values
+        };
+        var dataObj1 = {
+            'locations': [''],
+            'latitudesData': [0],
+            'longitudesData': [0],
+            'mapData': [0],
+            'markerColors': ['transparent']
+        };
+        var locations;
+        var latitudesData;
+        var longitudesData;
+        var mapData;
+        var markerColors;
+        if (dataView.categorical.categories[0].values
+            || dataView.categorical.values[0].values
+            || dataView.categorical.values[1].values
+            || dataView.categorical.values[2].values
+            || dataView.categorical.values[3].values) {
+            locations = dataObj.locations;
+            latitudesData = dataObj.latitudesData;
+            longitudesData = dataObj.longitudesData;
+            mapData = dataObj.mapData;
+            markerColors = dataObj.markerColors;
+        }
+        else {
+            locations = dataObj1.locations;
+            latitudesData = dataObj1.latitudesData;
+            longitudesData = dataObj1.longitudesData;
+            mapData = dataObj1.mapData;
+            markerColors = dataObj1.markerColors;
+        }
         /*
+            var locations = (dataView.categorical.categories[0].values) ? [''] : dataView.categorical.categories[0].values
+            var latitudesData = (dataView.categorical.values[0].values) ? [-71] : dataView.categorical.values[0].values
+            var longitudesData = (dataView.categorical.values[1].values) ? [52] : dataView.categorical.values[1].values
+            var mapData= (dataView.categorical.values[2].values) ? [0] :dataView.categorical.values[2].values
+            var markerColors = (dataView.categorical.values[3].values) ?  ['red'] : dataView.categorical.values[3].values
+        
+            
+            
+        
                
                 locations = ['']
-                latitudesData = [0]
-                longitudesData = [0]
+                latitudesData = [-71]
+                longitudesData = [52]
                 mapData= [0]
                 markerColors = ['red']
                         
@@ -572,7 +612,7 @@ class Visual {
         // var mapData = [0]
         // var markerColors= ['transparent']
         // console.log('Visual update', options);
-        // console.log('locations', locations);
+        console.log('locations', locations);
         var directEdit1 = dataView.metadata.objects.directEdit;
         var dataViewLen = Object.keys(dataView).length;
         //console.log('before', directEdit);
@@ -599,15 +639,15 @@ class Visual {
                 .setLngLat([longitudesData[x], latitudesData[x]])
                 .setPopup(popup)
                 .addTo(this.map);
-            // marker1.remove();
+            //marker1.remove();
         }
-        //this.initializeMap()
+        //  this.initializeMap()
         //  console.log('before mapEdits', mapEdits);
-        console.log('locations', locations);
-        console.log('latitudesData', latitudesData);
-        console.log('longitudesData', longitudesData);
-        console.log('markerColors', markerColors);
-        console.log('mapData', mapData);
+        //   console.log('locations', locations)
+        //   console.log('latitudesData', latitudesData)
+        //   console.log('longitudesData', longitudesData)
+        //   console.log('markerColors', markerColors)
+        //   console.log('mapData', mapData)
         var mapEdits1 = dataView.metadata.objects.mapEdits;
         mapEdits.geojsonLink = mapEdits1.geojsonLink;
         mapEdits.infoOnClick = mapEdits1.infoOnClick;
@@ -672,33 +712,34 @@ class Visual {
         //     .addTo(this.map);
         //    }
         this.map.on('load', () => {
-            /*  this.map.addSource('modis-lst', {
-                  'type': 'raster',
-                  'tiles': [
-                      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                  ],
-                  'tileSize': 256
-              });
-              
-              this.map.addLayer({
-                  'id': 'modis-lst-layer',
-                  'type': 'raster',
-                  'source': 'modis-lst',
-                  'paint': {}
-              });
-              
-          
-              this.map.addSource('radar', {
-                  'type': 'image',
-                  'url': 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
-                  'coordinates': [
-                      [-80.425, 46.437],
-                      [-71.516, 46.437],
-                      [-71.516, 37.936],
-                      [-80.425, 37.936]
-                  ]
-              });
-          */
+            /*
+               this.map.addSource('modis-lst', {
+                    'type': 'raster',
+                    'tiles': [
+                        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                    ],
+                    'tileSize': 256
+                });
+                
+                this.map.addLayer({
+                    'id': 'modis-lst-layer',
+                    'type': 'raster',
+                    'source': 'modis-lst',
+                    'paint': {}
+                });
+                
+            
+                this.map.addSource('radar', {
+                    'type': 'image',
+                    'url': 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
+                    'coordinates': [
+                        [-80.425, 46.437],
+                        [-71.516, 46.437],
+                        [-71.516, 37.936],
+                        [-80.425, 37.936]
+                    ]
+                });
+            */
             this.map.addSource('radar', {
                 'type': 'image',
                 'url': radarSettings.radarUrl,
