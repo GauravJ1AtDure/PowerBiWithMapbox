@@ -50,9 +50,6 @@ var dataView
 // var mapData = [0]
 // var markerColors= ['transparent']
 
-
-      
-
 var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat':20, 'centerLong':-80, 'zoomlevel':1}
 
 var mapEdits = {'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick':'name'}
