@@ -44,11 +44,11 @@ import { VisualFormattingSettingsModel } from "./settings";
 
 var dataView
 
-var locations = ['']
-var latitudesData = [-71]
-var longitudesData = [52]
-var mapData = [0]
-var markerColors= ['transparent']
+// var locations = ['']
+// var latitudesData = [-71]
+// var longitudesData = [52]
+// var mapData = [0]
+// var markerColors= ['transparent']
 
 
       
@@ -124,37 +124,38 @@ export class Visual implements IVisual {
 
     public update(options: VisualUpdateOptions) {
       this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, options.dataViews[0]);
-        dataView = options.dataViews[0];
+        
+// if (options.dataViews 
+//     && options.dataViews[0] 
+//     && options.dataViews[0].categorical
+//     && options.dataViews[0].categorical.categories
+//     && options.dataViews[0].categorical.values
+// )
+// {
+//     dataView = options.dataViews[0];
 
+// }
 
-         locations = [...dataView.categorical.categories[0].values]
-         latitudesData = [...dataView.categorical.values[0].values]
-         longitudesData = [...dataView.categorical.values[1].values]
-         mapData= [...dataView.categorical.values[2].values]
-         markerColors = [...dataView.categorical.values[3].values]
+dataView = options.dataViews[0];
 
-         var a = [-71]
-         var b = [52]
-         var c = [0]
+    var locations = (dataView.categorical.categories[0].values) ? dataView.categorical.categories[0].values : ['']
+    var latitudesData = (dataView.categorical.values[0].values) ? dataView.categorical.values[0].values : [0]
+    var longitudesData = (dataView.categorical.values[1].values) ? dataView.categorical.values[1].values : [0]
+    var mapData= (dataView.categorical.values[2].values) ? dataView.categorical.values[2].values : [0]
+    var markerColors = (dataView.categorical.values[3].values) ? dataView.categorical.values[3].values : ['red']
 
-        if ( locations.length === 1 && latitudesData.length === 1 && longitudesData.length === 1 
-         && mapData.length === 1  && markerColors.length === 1  )
-            {
-            locations = [...'']
-            latitudesData = [...a]
-            longitudesData = [...b]
-            mapData = [...c]
-            markerColors= [...'transparent']
-            }
-            else{
-                locations = [...dataView.categorical.categories[0].values]
-                latitudesData = [...dataView.categorical.values[0].values]
-                longitudesData = [...dataView.categorical.values[1].values]
-                mapData= [...dataView.categorical.values[2].values]
-                markerColors = [...dataView.categorical.values[3].values]
+    
+    
+/*
+       
+        locations = ['']
+        latitudesData = [0]
+        longitudesData = [0]
+        mapData= [0]
+        markerColors = ['red']
                 
-            }
-
+            
+*/
         
         
 
@@ -164,13 +165,13 @@ export class Visual implements IVisual {
 // var mapData = [0]
 // var markerColors= ['transparent']
 
-        console.log('Visual update', options);
-        console.log('locations', locations);
+       // console.log('Visual update', options);
+       // console.log('locations', locations);
 
         var directEdit1 = dataView.metadata.objects.directEdit
         var dataViewLen = Object.keys(dataView).length
 
-        console.log('before', directEdit);
+        //console.log('before', directEdit);
 
         if(Object.keys(directEdit1).length === 5)
         {
@@ -181,6 +182,7 @@ export class Visual implements IVisual {
         directEdit.zoomlevel = directEdit1.zoomLevel as typeof directEdit.zoomlevel
         }
         console.log('after', directEdit);
+       
 
       this.initializeMap()
 
@@ -194,13 +196,12 @@ export class Visual implements IVisual {
                 })
 */
         for (let x = 0; x < locations.length; x++) {
-            let lat:number=latitudesData[x] as number;
-            let lng:number=longitudesData[x] as number;
-            let marker_colors:string=markerColors[x] as string;
+           
+            
             const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
          
-            const marker1=new mapboxgl.Marker({color: marker_colors})
-            .setLngLat([lng,lat])
+            const marker1=new mapboxgl.Marker({color: markerColors[x]})
+            .setLngLat([longitudesData[x],latitudesData[x]])
             .setPopup(popup)
             .addTo(this.map);
            // marker1.remove();
@@ -209,7 +210,13 @@ export class Visual implements IVisual {
           
          //this.initializeMap()
 
-        console.log('before mapEdits', mapEdits);
+      //  console.log('before mapEdits', mapEdits);
+
+      console.log('locations', locations)
+      console.log('latitudesData', latitudesData)
+      console.log('longitudesData', longitudesData)
+      console.log('markerColors', markerColors)
+      console.log('mapData', mapData)
        
         var mapEdits1 = dataView.metadata.objects.mapEdits
         
@@ -271,13 +278,13 @@ export class Visual implements IVisual {
         radarSettings.radarLong_2 =  radarSettings1.radarLong_2 as typeof radarSettings.radarLat_2
         
 
-       console.log('dataViewLen', dataViewLen)
+      // console.log('dataViewLen', dataViewLen)
        console.log('locations', locations)
        console.log('latitudesData', latitudesData)
        console.log('longitudesData', longitudesData)
        console.log('markerColors', markerColors)
        console.log('mapData', mapData)
-      console.log('directEdit',directEdit)
+     // console.log('directEdit',directEdit)
       // console.log('mapEdits',  Object.keys(mapEdits).length)
       // console.log('choroplethRange', Object.keys(choroplethRange).length)
       // console.log('radarCoordinates',radarCoordinates)

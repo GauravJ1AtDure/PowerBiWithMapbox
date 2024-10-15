@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 101:
+/***/ 777:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 239:
+/***/ 395:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -439,7 +439,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 /***/ }),
 
-/***/ 54:
+/***/ 498:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -449,7 +449,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
 /*
 *  Power BI Visual CLI
 *
@@ -483,11 +483,11 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 
 var dataView;
-var locations = [''];
-var latitudesData = [-71];
-var longitudesData = [52];
-var mapData = [0];
-var markerColors = ['transparent'];
+// var locations = ['']
+// var latitudesData = [-71]
+// var longitudesData = [52]
+// var mapData = [0]
+// var markerColors= ['transparent']
 var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
 var mapEdits = { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'name' };
 var choroplethRange = { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
@@ -541,40 +541,41 @@ class Visual {
     }
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_2__/* .VisualFormattingSettingsModel */ .S, options.dataViews[0]);
+        // if (options.dataViews 
+        //     && options.dataViews[0] 
+        //     && options.dataViews[0].categorical
+        //     && options.dataViews[0].categorical.categories
+        //     && options.dataViews[0].categorical.values
+        // )
+        // {
+        //     dataView = options.dataViews[0];
+        // }
         dataView = options.dataViews[0];
-        locations = [...dataView.categorical.categories[0].values];
-        latitudesData = [...dataView.categorical.values[0].values];
-        longitudesData = [...dataView.categorical.values[1].values];
-        mapData = [...dataView.categorical.values[2].values];
-        markerColors = [...dataView.categorical.values[3].values];
-        var a = [-71];
-        var b = [52];
-        var c = [0];
-        if (locations.length === 1 && latitudesData.length === 1 && longitudesData.length === 1
-            && mapData.length === 1 && markerColors.length === 1) {
-            locations = [...''];
-            latitudesData = [...a];
-            longitudesData = [...b];
-            mapData = [...c];
-            markerColors = [...'transparent'];
-        }
-        else {
-            locations = [...dataView.categorical.categories[0].values];
-            latitudesData = [...dataView.categorical.values[0].values];
-            longitudesData = [...dataView.categorical.values[1].values];
-            mapData = [...dataView.categorical.values[2].values];
-            markerColors = [...dataView.categorical.values[3].values];
-        }
+        var locations = (dataView.categorical.categories[0].values) ? dataView.categorical.categories[0].values : [''];
+        var latitudesData = (dataView.categorical.values[0].values) ? dataView.categorical.values[0].values : [0];
+        var longitudesData = (dataView.categorical.values[1].values) ? dataView.categorical.values[1].values : [0];
+        var mapData = (dataView.categorical.values[2].values) ? dataView.categorical.values[2].values : [0];
+        var markerColors = (dataView.categorical.values[3].values) ? dataView.categorical.values[3].values : ['red'];
+        /*
+               
+                locations = ['']
+                latitudesData = [0]
+                longitudesData = [0]
+                mapData= [0]
+                markerColors = ['red']
+                        
+                    
+        */
         // var locations = ['']
         // var latitudesData = [-71]
         // var longitudesData = [52]
         // var mapData = [0]
         // var markerColors= ['transparent']
-        console.log('Visual update', options);
-        console.log('locations', locations);
+        // console.log('Visual update', options);
+        // console.log('locations', locations);
         var directEdit1 = dataView.metadata.objects.directEdit;
         var dataViewLen = Object.keys(dataView).length;
-        console.log('before', directEdit);
+        //console.log('before', directEdit);
         if (Object.keys(directEdit1).length === 5) {
             directEdit.style_Url = directEdit1.styleUrl;
             directEdit.projection = directEdit1.projection;
@@ -593,18 +594,20 @@ class Visual {
                   })
   */
         for (let x = 0; x < locations.length; x++) {
-            let lat = latitudesData[x];
-            let lng = longitudesData[x];
-            let marker_colors = markerColors[x];
             const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
-            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: marker_colors })
-                .setLngLat([lng, lat])
+            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: markerColors[x] })
+                .setLngLat([longitudesData[x], latitudesData[x]])
                 .setPopup(popup)
                 .addTo(this.map);
             // marker1.remove();
         }
         //this.initializeMap()
-        console.log('before mapEdits', mapEdits);
+        //  console.log('before mapEdits', mapEdits);
+        console.log('locations', locations);
+        console.log('latitudesData', latitudesData);
+        console.log('longitudesData', longitudesData);
+        console.log('markerColors', markerColors);
+        console.log('mapData', mapData);
         var mapEdits1 = dataView.metadata.objects.mapEdits;
         mapEdits.geojsonLink = mapEdits1.geojsonLink;
         mapEdits.infoOnClick = mapEdits1.infoOnClick;
@@ -641,13 +644,13 @@ class Visual {
         radarSettings.radarLong_1 = radarSettings1.radarLong_1;
         radarSettings.radarLat_2 = radarSettings1.radarLat_2;
         radarSettings.radarLong_2 = radarSettings1.radarLong_2;
-        console.log('dataViewLen', dataViewLen);
+        // console.log('dataViewLen', dataViewLen)
         console.log('locations', locations);
         console.log('latitudesData', latitudesData);
         console.log('longitudesData', longitudesData);
         console.log('markerColors', markerColors);
         console.log('mapData', mapData);
-        console.log('directEdit', directEdit);
+        // console.log('directEdit',directEdit)
         // console.log('mapEdits',  Object.keys(mapEdits).length)
         // console.log('choroplethRange', Object.keys(choroplethRange).length)
         // console.log('radarCoordinates',radarCoordinates)
@@ -773,7 +776,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(101);
+/* provided dependency */ var process = __webpack_require__(777);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -1500,7 +1503,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];
