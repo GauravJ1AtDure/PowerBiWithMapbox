@@ -49,6 +49,11 @@ class DirectEditSettings extends FormattingSettingsCard {
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
+    showMarkers = new formattingSettings.ToggleSwitch({
+        name: 'showMarkers',
+        displayName: "Show markers",
+        value: true
+    })
     styleUrl = new formattingSettings.ItemDropdown({
         name: 'styleUrl',
         items: [{ displayName: 'standard', value: 'mapbox://styles/mapbox/standard' },
@@ -85,7 +90,7 @@ class DirectEditSettings extends FormattingSettingsCard {
     });
     
    // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
+    slices = [this.showMarkers, this.styleUrl, this.projection ,this.centerLat, this.centerLong, this.zoomLevel]
 }
 
 class MapSettings extends FormattingSettingsCard {

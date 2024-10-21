@@ -31,6 +31,11 @@
     "objects": {
     "directEdit": {
       "properties": {
+        "showMarkers": {
+                    "type": {
+                        "bool": true
+                    }
+                },
         "styleUrl": {
             "displayName": "Base Layer",
             "type": {

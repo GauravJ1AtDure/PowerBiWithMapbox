@@ -10,12 +10,13 @@ declare class DirectEditSettings extends FormattingSettingsCard {
     private lat;
     private long;
     name: string;
+    showMarkers: formattingSettings.ToggleSwitch;
     styleUrl: formattingSettings.ItemDropdown;
     projection: formattingSettings.ItemDropdown;
     centerLat: formattingSettings.NumUpDown;
     centerLong: formattingSettings.NumUpDown;
     zoomLevel: formattingSettings.NumUpDown;
-    slices: (formattingSettings.NumUpDown | formattingSettings.ItemDropdown)[];
+    slices: (formattingSettings.NumUpDown | formattingSettings.ToggleSwitch | formattingSettings.ItemDropdown)[];
 }
 declare class MapSettings extends FormattingSettingsCard {
     displayName: string;

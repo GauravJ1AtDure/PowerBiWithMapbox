@@ -50,7 +50,7 @@ var dataView
 // var mapData = [0]
 // var markerColors= ['transparent']
 
-var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat':20, 'centerLong':-80, 'zoomlevel':1}
+var directEdit = { 'showMarkers':true, 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat':20, 'centerLong':-80, 'zoomlevel':1}
 
 var mapEdits = {'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick':'name'}
 
@@ -218,15 +218,16 @@ else
 
         //console.log('before', directEdit);
 
-        if(Object.keys(directEdit1).length === 5)
+        if(Object.keys(directEdit1).length === 6)
         {
+        directEdit.showMarkers = dataView.metadata.objects.directEdit.showMarkers
         directEdit.style_Url = directEdit1.styleUrl as typeof directEdit.style_Url
         directEdit.projection = directEdit1.projection as typeof directEdit.projection
         directEdit.centerLat= directEdit1.centerLat as typeof directEdit.centerLat
         directEdit.centerLong= directEdit1.centerLong as typeof directEdit.centerLong
         directEdit.zoomlevel = directEdit1.zoomLevel as typeof directEdit.zoomlevel
         }
-        console.log('after', directEdit);
+        console.log('after', directEdit.showMarkers);
        
 
    this.initializeMap()
@@ -239,7 +240,12 @@ else
                     zoom: directEdit.zoomlevel, // Default zoom level
                     projection: directEdit.projection,
                 })
+
 */
+              
+
+               if (dataView.metadata.objects.directEdit.showMarkers === true)
+               {
         for (let x = 0; x < locations.length; x++) {
            
             
@@ -249,10 +255,27 @@ else
             .setLngLat([longitudesData[x],latitudesData[x]])
             .setPopup(popup)
             .addTo(this.map);
-             //marker1.remove();
+           // marker1.remove();
            }
+        }
+        else
+        {
+
+            for (let x = 0; x < locations.length; x++) {
+           
+            
+                const popup = new mapboxgl.Popup({ offset: 25 }).setText(''+locations[x]+'-'+mapData[x]+' ')
+             
+                const marker1=new mapboxgl.Marker({color: markerColors[x]})
+                .setLngLat([longitudesData[x],latitudesData[x]])
+                .setPopup(popup)
+                .addTo(this.map);
+                marker1.remove();
+               }
+
+        }
+
        
-          
        //  this.initializeMap()
 
       //  console.log('before mapEdits', mapEdits);
@@ -295,7 +318,6 @@ else
     
       console.log('locations2',locations)
         
-            
             
         //     this.initializeMap()
 
@@ -461,6 +483,45 @@ else
         }
     });
 
+    this.map.addSource('ethnicity', {
+        type: 'vector',
+        url: 'mapbox://examples.8fgz4egr'
+    });
+    this.map.addLayer(
+        {
+            'id': 'population',
+            'type': 'circle',
+            'source': 'ethnicity',
+            'source-layer': 'sf2010',
+            'paint': {
+                // Make circles larger as the user zooms from z12 to z22.
+                'circle-radius': {
+                    'base': 1.75,
+                    'stops': [
+                        [12, 2],
+                        [22, 180]
+                    ]
+                },
+                // Color circles by ethnicity, using a `match` expression.
+                'circle-color': [
+                    'match',
+                    ['get', 'ethnicity'],
+                    'White',
+                    '#fbb03b',
+                    'Black',
+                    '#223b53',
+                    'Hispanic',
+                    '#e55e5e',
+                    'Asian',
+                    '#3bb2d0',
+                    /* other */ '#ccc'
+                ]
+            }
+        },
+        // Place polygons under labels, roads and buildings.
+        'aeroway-polygon'
+    );
+
 });
 
 
@@ -468,9 +529,6 @@ else
 
 
 }
-
-
-
 
     /**
      * Returns properties pane formatting model content hierarchies, properties and latest formatting values, Then populate properties pane.

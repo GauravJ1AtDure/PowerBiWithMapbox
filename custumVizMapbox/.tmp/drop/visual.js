@@ -2,7 +2,7 @@ var custumVizMapboxC0FF6AF78C124F308865FE422B5986E3_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 101:
+/***/ 777:
 /***/ ((module) => {
 
 // shim for using process in browser
@@ -193,7 +193,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 239:
+/***/ 395:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -241,6 +241,11 @@ class DirectEditSettings extends FormattingSettingsCard {
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
+    showMarkers = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ToggleSwitch */ .z.jF({
+        name: 'showMarkers',
+        displayName: "Show markers",
+        value: true
+    });
     styleUrl = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .formattingSettings.ItemDropdown */ .z.PA({
         name: 'styleUrl',
         items: [{ displayName: 'standard', value: 'mapbox://styles/mapbox/standard' },
@@ -276,7 +281,7 @@ class DirectEditSettings extends FormattingSettingsCard {
         value: null
     });
     // topLevelSlice = this.textProperty;
-    slices = [this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel];
+    slices = [this.showMarkers, this.styleUrl, this.projection, this.centerLat, this.centerLong, this.zoomLevel];
 }
 class MapSettings extends FormattingSettingsCard {
     displayName = 'Map Edits';
@@ -439,7 +444,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 /***/ }),
 
-/***/ 54:
+/***/ 498:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -449,7 +454,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(674);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(842);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(239);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(395);
 /*
 *  Power BI Visual CLI
 *
@@ -488,7 +493,7 @@ var dataView;
 // var longitudesData = [52]
 // var mapData = [0]
 // var markerColors= ['transparent']
-var directEdit = { 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
+var directEdit = { 'showMarkers': true, 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
 var mapEdits = { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'name' };
 var choroplethRange = { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
 var radarSettings = { 'radarUrl': 's', 'radarLat_1': 0, 'radarLong_1': 0, 'radarLat_2': 0, 'radarLong_2': 0 };
@@ -616,14 +621,15 @@ class Visual {
         var directEdit1 = dataView.metadata.objects.directEdit;
         var dataViewLen = Object.keys(dataView).length;
         //console.log('before', directEdit);
-        if (Object.keys(directEdit1).length === 5) {
+        if (Object.keys(directEdit1).length === 6) {
+            directEdit.showMarkers = dataView.metadata.objects.directEdit.showMarkers;
             directEdit.style_Url = directEdit1.styleUrl;
             directEdit.projection = directEdit1.projection;
             directEdit.centerLat = directEdit1.centerLat;
             directEdit.centerLong = directEdit1.centerLong;
             directEdit.zoomlevel = directEdit1.zoomLevel;
         }
-        console.log('after', directEdit);
+        console.log('after', directEdit.showMarkers);
         this.initializeMap();
         /* this.map = new mapboxgl.Map({
                       container: this.target,
@@ -632,14 +638,27 @@ class Visual {
                       zoom: directEdit.zoomlevel, // Default zoom level
                       projection: directEdit.projection,
                   })
+  
   */
-        for (let x = 0; x < locations.length; x++) {
-            const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
-            const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: markerColors[x] })
-                .setLngLat([longitudesData[x], latitudesData[x]])
-                .setPopup(popup)
-                .addTo(this.map);
-            //marker1.remove();
+        if (dataView.metadata.objects.directEdit.showMarkers === true) {
+            for (let x = 0; x < locations.length; x++) {
+                const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+                const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: markerColors[x] })
+                    .setLngLat([longitudesData[x], latitudesData[x]])
+                    .setPopup(popup)
+                    .addTo(this.map);
+                // marker1.remove();
+            }
+        }
+        else {
+            for (let x = 0; x < locations.length; x++) {
+                const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
+                const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: markerColors[x] })
+                    .setLngLat([longitudesData[x], latitudesData[x]])
+                    .setPopup(popup)
+                    .addTo(this.map);
+                marker1.remove();
+            }
         }
         //  this.initializeMap()
         //  console.log('before mapEdits', mapEdits);
@@ -800,6 +819,42 @@ class Visual {
                     'fill-opacity': 0.8
                 }
             });
+            this.map.addSource('ethnicity', {
+                type: 'vector',
+                url: 'mapbox://examples.8fgz4egr'
+            });
+            this.map.addLayer({
+                'id': 'population',
+                'type': 'circle',
+                'source': 'ethnicity',
+                'source-layer': 'sf2010',
+                'paint': {
+                    // Make circles larger as the user zooms from z12 to z22.
+                    'circle-radius': {
+                        'base': 1.75,
+                        'stops': [
+                            [12, 2],
+                            [22, 180]
+                        ]
+                    },
+                    // Color circles by ethnicity, using a `match` expression.
+                    'circle-color': [
+                        'match',
+                        ['get', 'ethnicity'],
+                        'White',
+                        '#fbb03b',
+                        'Black',
+                        '#223b53',
+                        'Hispanic',
+                        '#e55e5e',
+                        'Asian',
+                        '#3bb2d0',
+                        /* other */ '#ccc'
+                    ]
+                }
+            }, 
+            // Place polygons under labels, roads and buildings.
+            'aeroway-polygon');
         });
     }
     /**
@@ -817,7 +872,7 @@ class Visual {
 /***/ 842:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-/* provided dependency */ var process = __webpack_require__(101);
+/* provided dependency */ var process = __webpack_require__(777);
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */
 (function (global, factory) {
  true ? module.exports = factory() :
@@ -1544,7 +1599,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(54);
+/* harmony import */ var _src_visual__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(498);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];
