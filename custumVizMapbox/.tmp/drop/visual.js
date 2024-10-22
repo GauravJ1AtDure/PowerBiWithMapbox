@@ -233,11 +233,11 @@ var FormattingSettingsModel = powerbi_visuals_utils_formattingmodel__WEBPACK_IMP
 /**
  * Data Point Formatting Card
  */
-class DirectEditSettings extends FormattingSettingsCard {
-    displayName = 'Direct Edit';
+class LayerEditSettings extends FormattingSettingsCard {
+    displayName = 'Layer Edit';
     lat = 1;
     long = 2;
-    name = 'directEdit';
+    name = 'layerEdit';
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
@@ -434,11 +434,11 @@ class DataPointCardSettings extends FormattingSettingsCard {
 class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
-    directEditSettings = new DirectEditSettings();
+    layerEditSettings = new LayerEditSettings();
     mapSettings = new MapSettings();
     choroplethSettings = new ChoroplethSettings();
     radarSettings = new RadarSettings();
-    cards = [this.dataPointCard, this.directEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
+    cards = [this.dataPointCard, this.layerEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
 }
 
 
@@ -493,7 +493,7 @@ var dataView;
 // var longitudesData = [52]
 // var mapData = [0]
 // var markerColors= ['transparent']
-var directEdit = { 'showMarkers': true, 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
+var layerEdit = { 'showMarkers': true, 'style_Url': 'mapbox://styles/mapbox/standard', 'projection': 'mercator', 'centerLat': 20, 'centerLong': -80, 'zoomlevel': 1 };
 var mapEdits = { 'geojsonLink': 'https://raw.githubusercontent.com/GauravJ1AtDure/maps/refs/heads/main/antarctica.geojson', 'infoOnClick': 'name' };
 var choroplethRange = { 'dataKey': 'dataKey', 'range1Value': 1, 'range1Color': 'transparent', 'range2Value': 2, 'range2Color': 'transparent', 'range3Value': 3, 'range3Color': 'transparent', 'range4Value': 4, 'range4Color': 'transparent', 'range5Value': 5, 'range5Color': 'transparent' };
 var radarSettings = { 'radarUrl': 's', 'radarLat_1': 0, 'radarLong_1': 0, 'radarLat_2': 0, 'radarLong_2': 0 };
@@ -538,10 +538,10 @@ class Visual {
     initializeMap() {
         this.map = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Map)({
             container: this.target,
-            style: directEdit.style_Url,
-            center: [directEdit.centerLong, directEdit.centerLat],
-            zoom: directEdit.zoomlevel,
-            projection: directEdit.projection,
+            style: layerEdit.style_Url,
+            center: [layerEdit.centerLong, layerEdit.centerLat],
+            zoom: layerEdit.zoomlevel,
+            projection: layerEdit.projection,
         });
     }
     update(options) {
@@ -618,29 +618,29 @@ class Visual {
         // var markerColors= ['transparent']
         // console.log('Visual update', options);
         console.log('locations', locations);
-        var directEdit1 = dataView.metadata.objects.directEdit;
+        var layerEdit1 = dataView.metadata.objects.layerEdit;
         var dataViewLen = Object.keys(dataView).length;
-        //console.log('before', directEdit);
-        if (Object.keys(directEdit1).length === 6) {
-            directEdit.showMarkers = dataView.metadata.objects.directEdit.showMarkers;
-            directEdit.style_Url = directEdit1.styleUrl;
-            directEdit.projection = directEdit1.projection;
-            directEdit.centerLat = directEdit1.centerLat;
-            directEdit.centerLong = directEdit1.centerLong;
-            directEdit.zoomlevel = directEdit1.zoomLevel;
+        //console.log('before', layerEdit);
+        if (Object.keys(layerEdit1).length === 6) {
+            layerEdit.showMarkers = dataView.metadata.objects.layerEdit.showMarkers;
+            layerEdit.style_Url = layerEdit1.styleUrl;
+            layerEdit.projection = layerEdit1.projection;
+            layerEdit.centerLat = layerEdit1.centerLat;
+            layerEdit.centerLong = layerEdit1.centerLong;
+            layerEdit.zoomlevel = layerEdit1.zoomLevel;
         }
-        console.log('after', directEdit.showMarkers);
+        console.log('after', layerEdit.showMarkers);
         this.initializeMap();
         /* this.map = new mapboxgl.Map({
                       container: this.target,
-                      style: directEdit.style_Url,
-                      center: [directEdit.centerLong, directEdit.centerLat], // Default center
-                      zoom: directEdit.zoomlevel, // Default zoom level
-                      projection: directEdit.projection,
+                      style: layerEdit.style_Url,
+                      center: [layerEdit.centerLong, layerEdit.centerLat], // Default center
+                      zoom: layerEdit.zoomlevel, // Default zoom level
+                      projection: layerEdit.projection,
                   })
   
   */
-        if (dataView.metadata.objects.directEdit.showMarkers === true) {
+        if (dataView.metadata.objects.layerEdit.showMarkers === true) {
             for (let x = 0; x < locations.length; x++) {
                 const popup = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Popup)({ offset: 25 }).setText('' + locations[x] + '-' + mapData[x] + ' ');
                 const marker1 = new (mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default().Marker)({ color: markerColors[x] })
@@ -709,10 +709,6 @@ class Visual {
         console.log('longitudesData', longitudesData);
         console.log('markerColors', markerColors);
         console.log('mapData', mapData);
-        // console.log('directEdit',directEdit)
-        // console.log('mapEdits',  Object.keys(mapEdits).length)
-        // console.log('choroplethRange', Object.keys(choroplethRange).length)
-        // console.log('radarCoordinates',radarCoordinates)
         // let geoJsonLnk: string = geojsonLink as string;
         // let infoOnClck: string = infoOnClick as string;
         //    let radarUrl_str:string=radarUrl as string;

@@ -5,7 +5,7 @@ import FormattingSettingsModel = formattingSettings.Model;
 /**
  * Data Point Formatting Card
  */
-declare class DirectEditSettings extends FormattingSettingsCard {
+declare class LayerEditSettings extends FormattingSettingsCard {
     displayName: string;
     private lat;
     private long;
@@ -67,10 +67,10 @@ declare class DataPointCardSettings extends FormattingSettingsCard {
 */
 export declare class VisualFormattingSettingsModel extends FormattingSettingsModel {
     dataPointCard: DataPointCardSettings;
-    directEditSettings: DirectEditSettings;
+    layerEditSettings: LayerEditSettings;
     mapSettings: MapSettings;
     choroplethSettings: ChoroplethSettings;
     radarSettings: RadarSettings;
-    cards: (DataPointCardSettings | DirectEditSettings | MapSettings | ChoroplethSettings | RadarSettings)[];
+    cards: (DataPointCardSettings | LayerEditSettings | MapSettings | ChoroplethSettings | RadarSettings)[];
 }
 export {};

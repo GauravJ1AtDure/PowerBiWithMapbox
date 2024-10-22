@@ -41,11 +41,11 @@ import ItemDropdown = formattingSettings.ItemDropdown;
  * Data Point Formatting Card
  */
 
-class DirectEditSettings extends FormattingSettingsCard {
-    displayName = 'Direct Edit';
+class LayerEditSettings extends FormattingSettingsCard {
+    displayName = 'Layer Edit';
     private lat: number=1;
     private long: number=2;
-    name = 'directEdit';
+    name = 'layerEdit';
     //private minFontSize: number = 8;
     //private defaultFontSize: number = 11;
     //topLevelSlice = this.show;
@@ -256,9 +256,9 @@ class DataPointCardSettings extends FormattingSettingsCard {
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     // Create formatting settings model formatting cards
     dataPointCard = new DataPointCardSettings();
-    directEditSettings = new DirectEditSettings();
+    layerEditSettings = new LayerEditSettings();
     mapSettings = new MapSettings();
     choroplethSettings = new ChoroplethSettings();
     radarSettings = new RadarSettings();
-    cards = [this.dataPointCard ,this.directEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
+    cards = [this.dataPointCard ,this.layerEditSettings, this.mapSettings, this.choroplethSettings, this.radarSettings];
 }
